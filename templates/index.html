@@ -1512,14 +1512,6 @@
         btnExportCsv.addEventListener('click', exportToCSV);
         searchInput.addEventListener('input', filterCards);
 
-        // Setup popular category clicks on home portal view
-        document.querySelectorAll('.category-portal-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const category = card.getAttribute('data-category');
-                navigateToCategory(category);
-            });
-        });
-
         function navigateToCategory(category) {
             switchView('compare');
             
@@ -1538,8 +1530,8 @@
         // Check environment host
         const isStaticBuild = window.location.hostname !== '127.0.0.1' && window.location.hostname !== 'localhost';
 
-        // Initialize App on load
-        window.addEventListener('DOMContentLoaded', () => {
+        // Safe initializer function
+        function initializeApp() {
             updateFavoritesUI();
             
             if (staticCatalog && staticCatalog.length > 0) {
@@ -1566,7 +1558,22 @@
                 console.log("Running in dev mode. Sincronizar localmente.");
                 btnSync.parentNode.style.display = 'block'; // Show sync button locally
             }
-        });
+
+            // Register category card clicks securely after DOM is guaranteed ready
+            document.querySelectorAll('.category-portal-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const category = card.getAttribute('data-category');
+                    navigateToCategory(category);
+                });
+            });
+        }
+
+        // Safe DOMContentLoaded initializer to bypass timing issues
+        if (document.readyState === 'loading') {
+            window.addEventListener('DOMContentLoaded', initializeApp);
+        } else {
+            initializeApp();
+        }
 
         // App Tab View Switcher (Mobile & Desktop)
         function switchView(viewName) {
