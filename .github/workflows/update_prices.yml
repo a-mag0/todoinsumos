@@ -2,8 +2,8 @@ name: Actualización Diaria de Precios
 
 on:
   schedule:
-    # Ejecutar una vez al día a las 06:00 UTC (aprox. 02:00 AM hora de Chile)
-    - cron: '0 6 * * *'
+    # Ejecutar una vez al día a las 04:00 UTC (00:00 AM hora de Chile)
+    - cron: '0 4 * * *'
   workflow_dispatch: # Permite ejecutar el raspado manualmente desde GitHub Actions
 
 jobs:
