@@ -1407,6 +1407,15 @@
                 </div>
             </section>
 
+            <!-- Update database panel -->
+            <div style="background-color: var(--card-bg); border: 1px solid var(--border-color); padding: 1.5rem; border-radius: 12px; display: flex; flex-direction: column; gap: 1rem; position: relative; z-index: 1; margin-bottom: 1.25rem;">
+                <h3 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; color: white;"><i class='bx bx-refresh' style="color: var(--success);"></i> Actualizar Precios y Productos</h3>
+                <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.4;">Actualiza la base de datos completa realizando una nueva extracción en la nube o localmente. Si estás en Vercel, se iniciará una animación del tiempo de espera de compilación.</p>
+                <button id="btn-update-database" class="btn btn-primary" style="width: 100%;">
+                    <i class='bx bx-play'></i> Iniciar Actualización Completa
+                </button>
+            </div>
+
             <!-- Export Databases Panel -->
             <div style="background-color: var(--card-bg); border: 1px solid var(--border-color); padding: 1.5rem; border-radius: 12px; display: flex; flex-direction: column; gap: 1rem; position: relative; z-index: 1;">
                 <h3 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; color: white;"><i class='bx bx-export' style="color: var(--primary);"></i> Exportar Base de Precios</h3>
@@ -1464,6 +1473,30 @@
         <span id="toast-message">Notificación</span>
     </div>
 
+    <!-- Cloud / Local Update Progress Modal -->
+    <div id="update-modal" class="loader-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background-color: var(--bg-color); border: 1px solid var(--border-color); padding: 2rem; border-radius: 16px; max-width: 450px; width: 90%; text-align: center; display: flex; flex-direction: column; gap: 1.25rem; box-shadow: 0 20px 40px rgba(0,0,0,0.6); align-items: center; justify-content: center;">
+            <div id="modal-spinner" class="spinner" style="margin: 0 auto;"></div>
+            <h3 id="modal-title" style="font-family: var(--font-display); font-size: 1.25rem; color: white;">Actualizando Catálogo</h3>
+            <p id="modal-description" style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.4;">
+                Preparando la extracción de precios de proveedores en paralelo...
+            </p>
+            
+            <!-- Progress Bar -->
+            <div id="modal-progress-container" style="width: 100%; height: 6px; background-color: var(--border-color); border-radius: 3px; overflow: hidden; display: none;">
+                <div id="modal-progress-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--primary) 0%, var(--primary-hover) 100%); transition: width 0.3s ease;"></div>
+            </div>
+            
+            <span id="modal-timer" style="font-family: var(--font-display); font-size: 0.8rem; font-weight: 700; color: var(--primary-hover); display: none;">Tiempo restante: 60s</span>
+            
+            <div id="modal-actions" style="display: flex; gap: 0.75rem; margin-top: 0.5rem; justify-content: center; width: 100%;">
+                <button id="btn-modal-cancel" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.8rem; width: 100%;">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Javascript logic -->
     <script>
         // Precompiled static catalog placeholder for static build
@@ -1497,6 +1530,18 @@
         const toastIcon = document.getElementById('toast-icon');
         const toastMessage = document.getElementById('toast-message');
 
+        // New Update Modal DOM Elements
+        const btnUpdateDatabase = document.getElementById('btn-update-database');
+        const updateModal = document.getElementById('update-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalDescription = document.getElementById('modal-description');
+        const modalProgressContainer = document.getElementById('modal-progress-container');
+        const modalProgressBar = document.getElementById('modal-progress-bar');
+        const modalTimer = document.getElementById('modal-timer');
+        const btnModalCancel = document.getElementById('btn-modal-cancel');
+        
+        let updateInterval = null;
+
         // Create emptyState element dynamically to prevent reference crash
         const emptyState = document.createElement('div');
         emptyState.className = 'empty-state';
@@ -1510,6 +1555,8 @@
         btnSync.addEventListener('click', runExtraction);
         btnExportJson.addEventListener('click', exportToJSON);
         btnExportCsv.addEventListener('click', exportToCSV);
+        btnUpdateDatabase.addEventListener('click', triggerDatabaseUpdate);
+        btnModalCancel.addEventListener('click', hideUpdateModal);
         searchInput.addEventListener('input', filterCards);
 
         function navigateToCategory(category) {
@@ -2140,19 +2187,48 @@
             return "<i class='bx bxs-droplet' style='color: var(--primary);'></i>";
         }
 
-        // Filter comparison cards dynamically
+        // Filter comparison cards dynamically with typo tolerance and score-based sorting
         function filterCards() {
             const query = searchInput.value.toLowerCase().trim();
-            const cards = comparisonGrid.querySelectorAll('.product-compare-card');
+            const cards = Array.from(comparisonGrid.querySelectorAll('.product-compare-card'));
 
             let visibleCount = 0;
 
+            if (query.length < 2) {
+                // Default fast filtering for empty or short queries
+                cards.forEach(card => {
+                    const name = card.getAttribute('data-name');
+                    const norm = card.getAttribute('data-norm');
+                    const cat = card.getAttribute('data-category');
+                    
+                    const matchesQuery = query === '' || name.includes(query) || norm.includes(query);
+                    
+                    let matchesCategory = false;
+                    if (activeCategory === 'all') {
+                        matchesCategory = true;
+                    } else {
+                        matchesCategory = cat === activeCategory;
+                    }
+                    
+                    if (matchesQuery && matchesCategory) {
+                        card.style.display = '';
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                    card.style.order = ''; // Reset sort order
+                });
+                
+                infoCount.textContent = `Mostrando: ${visibleCount} de ${groupedProducts.length} productos`;
+                return;
+            }
+
+            // Typo-tolerant fuzzy search
+            const scoredCards = [];
             cards.forEach(card => {
                 const name = card.getAttribute('data-name');
                 const norm = card.getAttribute('data-norm');
                 const cat = card.getAttribute('data-category');
-                
-                const matchesQuery = name.includes(query) || norm.includes(query);
                 
                 let matchesCategory = false;
                 if (activeCategory === 'all') {
@@ -2161,15 +2237,41 @@
                     matchesCategory = cat === activeCategory;
                 }
                 
-                if (matchesQuery && matchesCategory) {
+                if (!matchesCategory) {
+                    card.style.display = 'none';
+                    return;
+                }
+
+                // Calculate fuzzy similarity scores
+                const scoreName = getFuzzyScore(query, name);
+                const scoreNorm = getFuzzyScore(query, norm);
+                const score = Math.max(scoreName, scoreNorm);
+
+                if (score > 10) { // Threshold for fuzzy match
                     card.style.display = '';
                     visibleCount++;
+                    scoredCards.push({ card, score });
                 } else {
                     card.style.display = 'none';
                 }
             });
 
-            infoCount.textContent = `Filtrados: ${visibleCount} de ${groupedProducts.length} productos agrupados`;
+            // Sort cards by score and set CSS order property
+            scoredCards.sort((a, b) => b.score - a.score);
+            scoredCards.forEach((item, index) => {
+                item.card.style.order = index;
+            });
+
+            if (visibleCount === 0) {
+                // Show empty state if no fuzzy matches found
+                comparisonGrid.appendChild(emptyState);
+            } else {
+                if (emptyState.parentNode === comparisonGrid) {
+                    comparisonGrid.removeChild(emptyState);
+                }
+            }
+
+            infoCount.textContent = `Resultados similares: ${visibleCount} de ${groupedProducts.length} productos`;
         }
 
         // Export Database to JSON
@@ -2259,6 +2361,203 @@
             URL.revokeObjectURL(url);
             
             showToast('Exportación CSV (Excel) exitosa.');
+        }
+
+        // --- TYPO TOLERANT FUZZY SEARCH FUNCTIONS ---
+        function cleanString(str) {
+            if (!str) return "";
+            return str.toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "") // Remove accents
+                .replace(/[^a-z0-9\s]/g, " ")     // Replace special characters with spaces
+                .replace(/\s+/g, " ")             // Normalize spaces
+                .trim();
+        }
+
+        function levenshtein(a, b) {
+            const matrix = [];
+            for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+            for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+
+            for (let i = 1; i <= b.length; i++) {
+                for (let j = 1; j <= a.length; j++) {
+                    if (b.charAt(i - 1) === a.charAt(j - 1)) {
+                        matrix[i][j] = matrix[i - 1][j - 1];
+                    } else {
+                        matrix[i][j] = Math.min(
+                            matrix[i - 1][j - 1] + 1, // Substitution
+                            matrix[i][j - 1] + 1,     // Insertion
+                            matrix[i - 1][j] + 1      // Deletion
+                        );
+                    }
+                }
+            }
+            return matrix[b.length][a.length];
+        }
+
+        function getFuzzyScore(query, target) {
+            const queryClean = cleanString(query);
+            const targetClean = cleanString(target);
+            
+            if (!queryClean) return 1;
+            
+            // Substring exact match yields high score
+            if (targetClean.includes(queryClean)) {
+                return targetClean.indexOf(queryClean) === 0 ? 100 : 80;
+            }
+
+            const queryWords = queryClean.split(' ');
+            const targetWords = targetClean.split(' ');
+            
+            let matchCount = 0;
+            let totalScore = 0;
+
+            queryWords.forEach(qWord => {
+                if (qWord.length < 2) return;
+                
+                if (targetClean.includes(qWord)) {
+                    matchCount++;
+                    totalScore += 55;
+                    return;
+                }
+                
+                let bestWordScore = 0;
+                targetWords.forEach(tWord => {
+                    if (tWord.length < 3) return;
+                    
+                    const distance = levenshtein(qWord, tWord);
+                    const maxLen = Math.max(qWord.length, tWord.length);
+                    const similarity = 1 - (distance / maxLen);
+                    
+                    // Typo tolerance: edit distance <= 2 for match
+                    if (similarity >= 0.65 && distance <= 2) {
+                        const score = Math.round(similarity * 45);
+                        if (score > bestWordScore) {
+                            bestWordScore = score;
+                        }
+                    }
+                });
+
+                if (bestWordScore > 0) {
+                    matchCount++;
+                    totalScore += bestWordScore;
+                }
+            });
+
+            // Adjust score based on number of matched words
+            if (matchCount < queryWords.length) {
+                totalScore = totalScore * (matchCount / queryWords.length) * 0.5;
+            }
+
+            return totalScore;
+        }
+
+        // --- DATABASE UPDATE MODAL TRIGGERS ---
+        function showUpdateModal(title, desc) {
+            modalTitle.textContent = title;
+            modalDescription.textContent = desc;
+            updateModal.style.display = 'flex';
+            updateModal.classList.add('active');
+        }
+
+        function hideUpdateModal() {
+            if (updateInterval) {
+                clearInterval(updateInterval);
+                updateInterval = null;
+            }
+            updateModal.style.display = 'none';
+            updateModal.classList.remove('active');
+        }
+
+        function triggerDatabaseUpdate() {
+            if (isStaticBuild) {
+                // Cloud Mode: Redirect to GitHub Actions + wait animation
+                showUpdateModal(
+                    "Actualización en la Nube (GitHub)", 
+                    "Abriremos la pestaña de GitHub Actions. Para iniciar, haz clic en el botón verde \"Run workflow\" en GitHub."
+                );
+                
+                modalProgressContainer.style.display = 'block';
+                modalTimer.style.display = 'block';
+                
+                let timeLeft = 60;
+                modalProgressBar.style.width = '0%';
+                modalTimer.textContent = `Tiempo estimado restante: ${timeLeft}s`;
+
+                // Open GitHub Actions in new tab
+                window.open("https://github.com/a-mag0/todoinsumos/actions/workflows/update_prices.yml", "_blank");
+
+                updateInterval = setInterval(() => {
+                    timeLeft--;
+                    const progress = ((60 - timeLeft) / 60) * 100;
+                    modalProgressBar.style.width = `${progress}%`;
+                    modalTimer.textContent = `Tiempo estimado restante: ${timeLeft}s`;
+
+                    // Simulated status messages
+                    if (timeLeft === 48) modalDescription.textContent = "GitHub Action iniciada. Descargando dependencias...";
+                    if (timeLeft === 35) modalDescription.textContent = "Raspando Samsa Aromas y Fábrica de Velas en paralelo...";
+                    if (timeLeft === 22) modalDescription.textContent = "Procesando formatos, mechas, frascos y ceras...";
+                    if (timeLeft === 10) modalDescription.textContent = "Empujando catálogo compilado e iniciando despliegue en Vercel...";
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(updateInterval);
+                        modalDescription.textContent = "¡Actualización completada! Recargando la aplicación...";
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
+                    }
+                }, 1000);
+            } else {
+                // Local Mode: Call Flask backend with simulated real-time steps
+                showUpdateModal(
+                    "Actualización Local",
+                    "Conectando con servidores locales e iniciando scrapers..."
+                );
+                
+                modalProgressContainer.style.display = 'block';
+                modalProgressBar.style.width = '5%';
+                
+                let progressVal = 5;
+                updateInterval = setInterval(() => {
+                    if (progressVal < 90) {
+                        progressVal += Math.floor(Math.random() * 8) + 3;
+                        modalProgressBar.style.width = `${progressVal}%`;
+                        
+                        if (progressVal > 15 && progressVal <= 35) modalDescription.textContent = "Extrayendo catálogo de Samsa Aromas... (997 variantes)";
+                        if (progressVal > 35 && progressVal <= 55) modalDescription.textContent = "Escaneando Spacio y Vimora Natural... (Pabilos y Goteros)";
+                        if (progressVal > 55 && progressVal <= 75) modalDescription.textContent = "Mapeando MMPP y Fábrica de Velas... (Clasificando Ceras y Frascos)";
+                        if (progressVal > 75) modalDescription.textContent = "Consolidando base de datos y limpiando ceras...";
+                    }
+                }, 800);
+
+                // Trigger actual backend scrape
+                fetch('/api/extraer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    clearInterval(updateInterval);
+                    if (data.success) {
+                        modalProgressBar.style.width = '100%';
+                        modalDescription.textContent = "¡Sincronización exitosa! Refrescando catálogo...";
+                        
+                        groupedProducts = data.grouped_products || [];
+                        renderCards(groupedProducts);
+                        renderPortalDashboard(groupedProducts);
+                        
+                        setTimeout(hideUpdateModal, 1500);
+                        showToast("Catálogo local actualizado con éxito.");
+                    } else {
+                        throw new Error(data.error || 'Fallo de extracción');
+                    }
+                })
+                .catch(err => {
+                    clearInterval(updateInterval);
+                    hideUpdateModal();
+                    showToast(`Error de actualización: ${err.message}`, 'error');
+                });
+            }
         }
     </script>
 </body>

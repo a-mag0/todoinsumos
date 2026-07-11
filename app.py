@@ -51,6 +51,18 @@ def normalize_size(size_str):
     if any(k in size_str for k in ['15 gr', '15g', '15gr', '20 gr', '20g', '20gr', '15 g', '20 g']):
         return "15-20 g"
         
+    # Normalize pack/unit sizes for wicks and jars
+    if any(k in size_str for k in ['100 unidad', '100 u', '100u', '100 un', '100un']):
+        return "100 U"
+    if any(k in size_str for k in ['50 unidad', '50 u', '50u', '50 un', '50un']):
+        return "50 U"
+    if any(k in size_str for k in ['20 unidad', '20 u', '20u', '20 un', '20un']):
+        return "20 U"
+    if any(k in size_str for k in ['10 unidad', '10 u', '10u', '10 un', '10un']):
+        return "10 U"
+    if any(k in size_str for k in ['1 unidad', '1 u', '1u', '1 un', '1un', 'unidad', 'c/u', 'por unidad', 'unitaria', 'unidad sola']):
+        return "1 U"
+        
     return size_str
 
 def normalize_product_name(name):
@@ -69,12 +81,12 @@ def normalize_product_name(name):
         # Standardize Punto de Fusion 62 as APF
         fusion = " APF"
         
-    # Standardize Soy Wax
-    if 'cera' in name_norm and ('soja' in name_norm or 'soya' in name_norm):
+    # Standardize Soy Wax (BPF/APF)
+    if 'soja' in name_norm or 'soya' in name_norm:
         return f"Cera de Soja{fusion}"
         
     # Standardize Beeswax
-    if 'cera' in name_norm and ('abeja' in name_norm or 'abejas' in name_norm):
+    if 'abeja' in name_norm or 'abejas' in name_norm:
         return "Cera de Abeja"
         
     # Standardize Arena Perlada
