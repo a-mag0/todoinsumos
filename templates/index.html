@@ -1,0 +1,2038 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Todo Insumos - El comparador inteligente de velas y jabones</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Boxicons for Premium Icons -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: hsl(222, 47%, 9%);
+            --card-bg: hsla(223, 47%, 14%, 0.7);
+            --border-color: hsla(223, 47%, 22%, 0.45);
+            --border-hover: hsla(250, 85%, 65%, 0.5);
+            
+            --text-primary: hsl(0, 0%, 96%);
+            --text-secondary: hsl(215, 20%, 68%);
+            --text-muted: hsl(215, 15%, 48%);
+            
+            --primary: hsl(250, 85%, 65%);
+            --primary-glow: hsla(250, 85%, 65%, 0.3);
+            --primary-hover: hsl(250, 85%, 72%);
+            
+            --success: hsl(142, 76%, 42%);
+            --success-bg: hsla(142, 76%, 42%, 0.12);
+            --success-border: hsla(142, 76%, 42%, 0.3);
+            
+            --error: hsl(355, 85%, 55%);
+            --error-bg: hsla(355, 85%, 55%, 0.12);
+            --error-border: hsla(355, 85%, 55%, 0.3);
+            
+            --warning: hsl(38, 92%, 50%);
+            --warning-bg: hsla(38, 92%, 50%, 0.12);
+            
+            --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-display: 'Outfit', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        /* Base Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(242, 60%, 18%, 0.4) 0px, transparent 40%),
+                radial-gradient(at 100% 100%, hsla(280, 50%, 12%, 0.35) 0px, transparent 40%),
+                radial-gradient(at 50% 50%, hsla(250, 60%, 15%, 0.15) 0px, transparent 60%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: hsl(223, 30%, 20%);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                padding: 2.5rem 1.5rem;
+            }
+        }
+
+        /* Decorative background elements */
+        .ambient-glow {
+            position: absolute;
+            top: -200px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 800px;
+            height: 400px;
+            background: var(--primary-glow);
+            filter: blur(160px);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Header Style (Mobile First) */
+        header {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1.25rem;
+        }
+
+        @media (min-width: 768px) {
+            header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 2.5rem;
+                padding-bottom: 1.5rem;
+            }
+        }
+
+        .header-title-container h1 {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #ffffff 40%, #c7d2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.15rem;
+        }
+
+        @media (min-width: 768px) {
+            .header-title-container h1 {
+                font-size: 2.5rem;
+            }
+        }
+
+        .header-title-container p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        /* Button Styling */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.25rem;
+            border-radius: 10px;
+            font-family: var(--font-display);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            border: 1px solid transparent;
+            user-select: none;
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .btn {
+                width: auto;
+            }
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, hsl(262, 80%, 55%) 100%);
+            color: white;
+            box-shadow: 0 4px 15px var(--primary-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px hsla(250, 85%, 65%, 0.4);
+            background: linear-gradient(135deg, var(--primary-hover) 0%, hsl(262, 80%, 60%) 100%);
+        }
+
+        .btn-secondary {
+            background: hsla(223, 47%, 16%, 0.5);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: hsla(223, 47%, 22%, 0.7);
+            border-color: var(--border-hover);
+        }
+
+        /* Providers Status Grid (Mobile swipeable) */
+        .providers-grid {
+            display: flex;
+            gap: 0.85rem;
+            overflow-x: auto;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            position: relative;
+            z-index: 1;
+        }
+
+        .providers-grid::-webkit-scrollbar {
+            display: none;
+        }
+
+        @media (min-width: 992px) {
+            .providers-grid {
+                display: grid;
+                grid-template-columns: repeat(5, 1fr);
+                overflow-x: visible;
+                padding-bottom: 0;
+                margin-bottom: 2.5rem;
+            }
+        }
+
+        .provider-card {
+            background-color: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            min-width: 170px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @media (min-width: 992px) {
+            .provider-card {
+                min-width: 0;
+            }
+        }
+
+        .provider-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--text-muted);
+        }
+
+        .provider-card.status-success::before { background: var(--success); }
+        .provider-card.status-error::before { background: var(--error); }
+        .provider-card.status-waiting::before { background: var(--warning); }
+
+        .provider-title {
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .provider-status {
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 0.15rem 0.4rem;
+            border-radius: 10px;
+            text-transform: uppercase;
+        }
+
+        .status-lbl {
+            background: hsla(223, 47%, 10%, 0.4);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .provider-card.status-success .status-lbl {
+            background-color: var(--success-bg);
+            color: var(--success);
+            border-color: var(--success-border);
+        }
+
+        .provider-card.status-error .status-lbl {
+            background-color: var(--error-bg);
+            color: var(--error);
+            border-color: var(--error-border);
+        }
+
+        .provider-card.status-waiting .status-lbl {
+            background-color: var(--warning-bg);
+            color: var(--warning);
+            border-color: hsla(38, 92%, 50%, 0.25);
+        }
+
+        .count-value {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .count-lbl {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+        }
+
+        .provider-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.65rem;
+            display: flex;
+            align-items: center;
+            gap: 0.15rem;
+        }
+
+        /* Categories Portal Grid (Responsive) */
+        .categories-portal-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (min-width: 768px) {
+            .categories-portal-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 1.25rem;
+                margin-bottom: 2.5rem;
+            }
+        }
+
+        .category-portal-card {
+            background-color: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .category-portal-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--border-hover);
+        }
+
+        .category-portal-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+        }
+
+        .category-portal-title {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .category-portal-desc {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            .category-portal-desc {
+                display: block;
+                line-height: 1.3;
+            }
+        }
+
+        .category-portal-count {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--primary-hover);
+            margin-top: auto;
+        }
+
+        /* Deals Slider / Horizontal scroll on Mobile */
+        .deals-grid {
+            display: flex;
+            gap: 0.85rem;
+            overflow-x: auto;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            position: relative;
+            z-index: 1;
+        }
+
+        .deals-grid::-webkit-scrollbar {
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            .deals-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+                overflow-x: visible;
+                padding-bottom: 0;
+                margin-bottom: 3rem;
+            }
+        }
+
+        .deal-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            min-width: 250px;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+            position: relative;
+        }
+
+        @media (min-width: 768px) {
+            .deal-card {
+                min-width: 0;
+            }
+        }
+
+        .deal-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--border-hover);
+        }
+
+        .deal-badge {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: var(--success);
+            color: white;
+            font-weight: 800;
+            font-size: 0.65rem;
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            z-index: 2;
+        }
+
+        .deal-image-container {
+            width: 100%;
+            height: 110px;
+            border-radius: 6px;
+            background: hsla(222, 47%, 9%, 0.85);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .deal-image {
+            max-width: 85%;
+            max-height: 85%;
+            object-fit: contain;
+        }
+
+        .deal-name {
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: white;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .deal-pricing {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-top: 1px solid hsla(223, 47%, 25%, 0.3);
+            padding-top: 0.5rem;
+            margin-top: auto;
+        }
+
+        .deal-price-val {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--success);
+            font-family: var(--font-display);
+        }
+
+        .deal-savings-val {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--success);
+            background-color: var(--success-bg);
+            border: 1px solid var(--success-border);
+            padding: 0.15rem 0.35rem;
+            border-radius: 4px;
+        }
+
+        /* Favorites Toggle Icon */
+        .fav-btn {
+            background: hsla(223, 47%, 10%, 0.7);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 1.15rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+        }
+
+        .fav-btn:hover {
+            color: #eab308;
+            border-color: #eab308;
+            background: rgba(234, 179, 8, 0.1);
+        }
+
+        .fav-btn.active {
+            color: #eab308;
+            border-color: rgba(234, 179, 8, 0.3);
+            background: rgba(234, 179, 8, 0.15);
+        }
+
+        /* Toolbar (Mobile Stacked, Desktop Row) */
+        .toolbar {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (min-width: 768px) {
+            .toolbar {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                padding: 1rem 1.5rem;
+                margin-bottom: 2rem;
+            }
+        }
+
+        .toolbar-title {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .search-container {
+            position: relative;
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .search-container {
+                width: 320px;
+            }
+        }
+
+        .search-input {
+            width: 100%;
+            background-color: hsla(222, 47%, 9%, 0.85);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.55rem 1rem 0.55rem 2.25rem;
+            color: white;
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            transition: var(--transition-smooth);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 8px var(--primary-glow);
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        /* Filter Pills (Swipeable on Mobile) */
+        .categories-filter-bar {
+            display: flex;
+            gap: 0.4rem;
+            overflow-x: auto;
+            padding-bottom: 0.6rem;
+            margin-bottom: 1.25rem;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            position: relative;
+            z-index: 1;
+        }
+
+        .categories-filter-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-pill {
+            background: hsla(223, 47%, 14%, 0.7);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.4rem 0.95rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: var(--font-display);
+            transition: var(--transition-smooth);
+            user-select: none;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .category-pill:hover {
+            border-color: var(--border-hover);
+            color: white;
+        }
+
+        .category-pill.active {
+            background: linear-gradient(135deg, var(--primary) 0%, hsl(262, 80%, 55%) 100%);
+            border-color: transparent;
+            color: white;
+        }
+
+        /* Comparison Cards Grid */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: repeat(auto-fill, minmax(435px, 1fr));
+                gap: 1.5rem;
+                margin-bottom: 2.5rem;
+            }
+        }
+
+        /* Product Comparison Card styling with Image */
+        .product-compare-card {
+            background-color: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .product-compare-card {
+                padding: 1.25rem;
+            }
+        }
+
+        .card-header-main {
+            display: flex;
+            gap: 0.85rem;
+            align-items: center;
+            border-bottom: 1px solid hsla(223, 47%, 25%, 0.3);
+            padding-bottom: 0.85rem;
+            position: relative;
+        }
+
+        .product-card-image-container {
+            width: 55px;
+            height: 55px;
+            border-radius: 8px;
+            background: hsla(222, 47%, 9%, 0.85);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .product-card-image {
+            max-width: 85%;
+            max-height: 85%;
+            object-fit: contain;
+        }
+
+        .card-header-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+            padding-right: 2.5rem; /* Make room for fav btn */
+        }
+
+        .card-category-badge {
+            background-color: hsla(250, 85%, 65%, 0.08);
+            color: var(--primary-hover);
+            border: 1px solid hsla(250, 85%, 65%, 0.2);
+            padding: 0.1rem 0.35rem;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            display: inline-block;
+            width: fit-content;
+            text-transform: uppercase;
+        }
+
+        .product-name-title {
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: white;
+            line-height: 1.2;
+        }
+
+        /* Comparison Table inside Card */
+        .compare-table-container {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: rgba(15, 23, 42, 0.2);
+        }
+
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.775rem;
+            text-align: left;
+        }
+
+        .compare-table th {
+            background-color: hsla(223, 47%, 10%, 0.8);
+            font-family: var(--font-display);
+            font-weight: 600;
+            color: white;
+            padding: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+            text-transform: uppercase;
+            font-size: 0.65rem;
+        }
+
+        .compare-table td {
+            padding: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            vertical-align: middle;
+        }
+
+        .compare-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .size-badge {
+            background-color: hsla(250, 85%, 65%, 0.08);
+            color: var(--primary-hover);
+            border: 1px solid hsla(250, 85%, 65%, 0.15);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.7rem;
+            display: inline-block;
+        }
+
+        .price-value {
+            font-weight: 700;
+            color: white;
+            font-size: 0.8rem;
+        }
+
+        .price-provider {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+        }
+
+        .shop-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.15rem;
+            font-size: 0.65rem;
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .cheapest-row {
+            background-color: hsla(142, 76%, 42%, 0.04);
+        }
+
+        .cheapest-badge {
+            background-color: var(--success-bg);
+            color: var(--success);
+            border: 1px solid var(--success-border);
+            padding: 0.1rem 0.35rem;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.15rem;
+        }
+
+        .provider-logo-small {
+            font-size: 0.75rem;
+            vertical-align: middle;
+            margin-right: 0.15rem;
+        }
+
+        /* Alternatives Section */
+        .alternatives-section {
+            margin-top: 0.75rem;
+            padding-top: 0.65rem;
+            border-top: 1px dashed hsla(223, 47%, 25%, 0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .alternatives-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+
+        .alternatives-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+        }
+
+        .alternative-pill {
+            background: hsla(223, 47%, 18%, 0.5);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.2rem 0.55rem;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .alternative-pill:hover {
+            border-color: var(--primary);
+            color: white;
+        }
+
+        /* Pulse glow animation for targeted scrolls */
+        @keyframes pulse-glow {
+            0% {
+                box-shadow: 0 0 0 0 hsla(250, 85%, 65%, 0.6);
+                border-color: var(--primary);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 20px 8px hsla(250, 85%, 65%, 0.3);
+                border-color: var(--primary-hover);
+                transform: scale(1.01);
+            }
+            100% {
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+                border-color: var(--border-color);
+                transform: scale(1);
+            }
+        }
+
+        .pulse-glow-active {
+            animation: pulse-glow 1.8s cubic-bezier(0.4, 0, 0.2, 1) 2;
+        }
+
+        /* Loader Overlay */
+        .loader-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: hsla(222, 47%, 9%, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            gap: 1rem;
+            padding: 2rem;
+        }
+
+        .loader-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .spinner {
+            width: 45px;
+            height: 45px;
+            border: 3.5px solid var(--border-color);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loader-text {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+        }
+
+        .loader-subtext {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: -0.5rem;
+            text-align: center;
+            max-width: 280px;
+        }
+
+        /* Empty state */
+        .empty-state {
+            grid-column: 1 / -1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 1.5rem;
+            text-align: center;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 3.5rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            color: white;
+            margin-bottom: 0.35rem;
+        }
+
+        .empty-state p {
+            font-size: 0.8rem;
+        }
+
+        /* Panel Footer */
+        .panel-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        /* Toast Alert */
+        .toast {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1rem;
+            left: 1rem;
+            background-color: #1e293b;
+            border-left: 4px solid var(--primary);
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            transform: translateY(200%);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 100;
+        }
+
+        @media (min-width: 480px) {
+            .toast {
+                left: auto;
+                right: 1.5rem;
+                width: 320px;
+            }
+        }
+
+        .toast.show {
+            transform: translateY(0);
+        }
+
+        .toast i {
+            font-size: 1.15rem;
+        }
+
+        .toast-success { border-left-color: var(--success); }
+        .toast-success i { color: var(--success); }
+        .toast-error { border-left-color: var(--error); }
+        .toast-error i { color: var(--error); }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-glow"></div>
+
+    <div class="container">
+        
+        <!-- Header -->
+        <header>
+            <div class="header-title-container">
+                <h1>Todo Insumos</h1>
+                <p><i class='bx bx-git-compare'></i> El comparador inteligente de velas y jabones</p>
+            </div>
+            <div>
+                <button id="btn-sync" class="btn btn-primary">
+                    <i class='bx bx-sync'></i> Sincronizar y Buscar Precios
+                </button>
+            </div>
+        </header>
+
+        <!-- Providers Status Cards (Swipeable) -->
+        <section class="providers-grid">
+            
+            <!-- Samsa Aromas Card -->
+            <div id="card-samsa" class="provider-card status-waiting">
+                <div class="card-header">
+                    <span class="provider-title">
+                        <i class='bx bxs-store-alt'></i> Samsa
+                    </span>
+                    <span class="provider-status status-lbl">Espera</span>
+                </div>
+                <div class="card-body">
+                    <div class="product-count">
+                        <span class="count-value">-</span>
+                        <span class="count-lbl">Variantes</span>
+                    </div>
+                    <a href="https://samsaaromas.com/collections/aromas" target="_blank" class="provider-link">
+                        Ver <i class='bx bx-right-top-arrow-circle'></i>
+                    </a>
+                </div>
+                <div class="error-details"></div>
+            </div>
+
+            <!-- Spacio Natural Card -->
+            <div id="card-spacio" class="provider-card status-waiting">
+                <div class="card-header">
+                    <span class="provider-title">
+                        <i class='bx bxs-spa'></i> Spacio
+                    </span>
+                    <span class="provider-status status-lbl">Espera</span>
+                </div>
+                <div class="card-body">
+                    <div class="product-count">
+                        <span class="count-value">-</span>
+                        <span class="count-lbl">Variantes</span>
+                    </div>
+                    <a href="https://www.spacionatural.cl/" target="_blank" class="provider-link">
+                        Ver <i class='bx bx-right-top-arrow-circle'></i>
+                    </a>
+                </div>
+                <div class="error-details"></div>
+            </div>
+
+            <!-- Vimora Natural Card -->
+            <div id="card-vimora" class="provider-card status-waiting">
+                <div class="card-header">
+                    <span class="provider-title">
+                        <i class='bx bxs-leaf'></i> Vimora
+                    </span>
+                    <span class="provider-status status-lbl">Espera</span>
+                </div>
+                <div class="card-body">
+                    <div class="product-count">
+                        <span class="count-value">-</span>
+                        <span class="count-lbl">Variantes</span>
+                    </div>
+                    <a href="https://www.vimoranatural.cl/" target="_blank" class="provider-link">
+                        Ver <i class='bx bx-right-top-arrow-circle'></i>
+                    </a>
+                </div>
+                <div class="error-details"></div>
+            </div>
+
+            <!-- MMPP Card -->
+            <div id="card-mmpp" class="provider-card status-waiting">
+                <div class="card-header">
+                    <span class="provider-title">
+                        <i class='bx bxs-flask' style="color: #a78bfa;"></i> MMPP
+                    </span>
+                    <span class="provider-status status-lbl">Espera</span>
+                </div>
+                <div class="card-body">
+                    <div class="product-count">
+                        <span class="count-value">-</span>
+                        <span class="count-lbl">Variantes</span>
+                    </div>
+                    <a href="https://mmpp.cl/categoria/insumos-para-velas/" target="_blank" class="provider-link">
+                        Ver <i class='bx bx-right-top-arrow-circle'></i>
+                    </a>
+                </div>
+                <div class="error-details"></div>
+            </div>
+
+            <!-- Fábrica de Velas Card -->
+            <div id="card-fabrica" class="provider-card status-waiting">
+                <div class="card-header">
+                    <span class="provider-title">
+                        <i class='bx bxs-store' style="color: #f43f5e;"></i> F. de Velas
+                    </span>
+                    <span class="provider-status status-lbl">Espera</span>
+                </div>
+                <div class="card-body">
+                    <div class="product-count">
+                        <span class="count-value">-</span>
+                        <span class="count-lbl">Variantes</span>
+                    </div>
+                    <a href="https://fabricadevelas.cl/collections/insumos-velas" target="_blank" class="provider-link">
+                        Ver <i class='bx bx-right-top-arrow-circle'></i>
+                    </a>
+                </div>
+                <div class="error-details"></div>
+            </div>
+
+        </section>
+
+        <!-- Popular Categories Section -->
+        <section id="portal-categories-section" class="portal-section" style="display: none;">
+            <h2 class="section-title"><i class='bx bxs-grid-alt'></i> Categorías Populares</h2>
+            <div class="categories-portal-grid">
+                
+                <!-- Ceras -->
+                <div class="category-portal-card" data-category="Ceras">
+                    <div class="category-portal-icon" style="background-color: rgba(251, 191, 36, 0.1); color: #fbbf24;">
+                        <i class='bx bxs-color-fill'></i>
+                    </div>
+                    <span class="category-portal-title">Ceras</span>
+                    <span class="category-portal-desc">Ceras de soya BPF y APF, cera de abejas y parafina para tus velas.</span>
+                    <span class="category-portal-count" id="count-ceras">0 productos</span>
+                </div>
+
+                <!-- Fragancias -->
+                <div class="category-portal-card" data-category="Fragancias">
+                    <div class="category-portal-icon" style="background-color: rgba(59, 130, 246, 0.1); color: #3b82f6;">
+                        <i class='bx bxs-droplet'></i>
+                    </div>
+                    <span class="category-portal-title">Fragancias</span>
+                    <span class="category-portal-desc">Esencias aromáticas y aromas concentrados para velas y difusores.</span>
+                    <span class="category-portal-count" id="count-fragancias">0 productos</span>
+                </div>
+
+                <!-- Aceites y Materias Primas -->
+                <div class="category-portal-card" data-category="Aceites y Materias Primas">
+                    <div class="category-portal-icon" style="background-color: rgba(167, 139, 250, 0.1); color: #a78bfa;">
+                        <i class='bx bxs-flask'></i>
+                    </div>
+                    <span class="category-portal-title">Materias Primas</span>
+                    <span class="category-portal-desc">Aceites portadores, mantecas naturales, pabilos, micas y aditivos.</span>
+                    <span class="category-portal-count" id="count-aceites">0 productos</span>
+                </div>
+
+                <!-- Moldes -->
+                <div class="category-portal-card" data-category="Moldes">
+                    <div class="category-portal-icon" style="background-color: rgba(244, 63, 94, 0.1); color: #f43f5e;">
+                        <i class='bx bxs-shapes'></i>
+                    </div>
+                    <span class="category-portal-title">Moldes</span>
+                    <span class="category-portal-desc">Moldes de silicona cilíndricos, decorativos y formas 3D.</span>
+                    <span class="category-portal-count" id="count-moldes">0 productos</span>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Deals of the Day Section -->
+        <section id="portal-deals-section" class="portal-section" style="display: none;">
+            <h2 class="section-title"><i class='bx bxs-hot'></i> Ofertas del Día (Mayores Ahorros)</h2>
+            <div id="deals-grid" class="deals-grid">
+                <!-- Calculated deals cards will go here -->
+            </div>
+        </section>
+
+        <!-- Category Pills Filter Bar -->
+        <section id="categories-bar" class="categories-filter-bar" style="display: none;">
+            <button class="category-pill active" data-category="all">Todos</button>
+            <button class="category-pill" data-category="Fragancias">Fragancias</button>
+            <button class="category-pill" data-category="Ceras">Ceras</button>
+            <button class="category-pill" data-category="Aceites y Materias Primas">Insumos y Aditivos</button>
+            <button class="category-pill" data-category="Moldes">Moldes</button>
+            <button class="category-pill" data-category="favoritos" id="pill-favorites" style="border-color: hsla(45, 93%, 47%, 0.35);"><i class='bx bxs-star' style="color: #eab308; margin-right: 0.15rem;"></i> Favoritos (<span id="fav-count">0</span>)</button>
+        </section>
+
+        <!-- Actions Toolbar -->
+        <section class="toolbar">
+            <div class="toolbar-title">
+                <i class='bx bx-search-alt'></i> Comparativa de Catálogos
+            </div>
+            
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; width: 100%; max-width: 550px; justify-content: flex-end;">
+                <div class="search-container">
+                    <i class='bx bx-search'></i>
+                    <input type="text" id="search-input" class="search-input" placeholder="Buscar esencia (ej: coco, cera)..." disabled>
+                </div>
+                <button id="btn-export" class="btn btn-secondary" disabled>
+                    <i class='bx bx-export'></i> Exportar a ERP
+                </button>
+            </div>
+        </section>
+
+        <!-- Main Comparison Cards View -->
+        <main style="position: relative;">
+            
+            <!-- Loader Overlay -->
+            <div id="loader-view" class="loader-overlay">
+                <div class="spinner"></div>
+                <span class="loader-text">Cargando catálogo...</span>
+                <span class="loader-subtext">Sincronizando la base de datos de precios. Esto tomará un momento.</span>
+            </div>
+
+            <!-- Comparison Cards Grid -->
+            <div id="comparison-grid" class="comparison-grid">
+                
+                <!-- Default Empty State -->
+                <div id="empty-state" class="empty-state">
+                    <i class='bx bx-git-compare'></i>
+                    <h3>No hay comparativas cargadas</h3>
+                    <p>Haz clic en "Sincronizar y Buscar Precios" para iniciar el mapeo de variantes.</p>
+                </div>
+
+            </div>
+
+            <!-- Footer Details -->
+            <div class="panel-footer">
+                <span id="info-count">Mostrando: 0 productos agrupados</span>
+                <span id="info-timestamp">Última actualización: Nunca</span>
+            </div>
+
+        </main>
+        
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast">
+        <i id="toast-icon" class='bx'></i>
+        <span id="toast-message">Notificación</span>
+    </div>
+
+    <!-- Javascript logic -->
+    <script>
+        // Precompiled static catalog placeholder for static build.
+        // It will be replaced during build with the JSON object.
+        const staticCatalog = /* STATIC_CATALOG_PLACEHOLDER_JSON */ || [];
+
+        // Global data structure
+        let groupedProducts = [];
+        let activeCategory = 'all';
+        let favorites = JSON.parse(localStorage.getItem('todo_insumos_favorites')) || [];
+
+        // DOM elements
+        const btnSync = document.getElementById('btn-sync');
+        const btnExport = document.getElementById('btn-export');
+        const searchInput = document.getElementById('search-input');
+        const comparisonGrid = document.getElementById('comparison-grid');
+        const loaderView = document.getElementById('loader-view');
+        const emptyState = document.getElementById('empty-state');
+        const categoriesBar = document.getElementById('categories-bar');
+        const portalCategoriesSection = document.getElementById('portal-categories-section');
+        const portalDealsSection = document.getElementById('portal-deals-section');
+        
+        const cardSamsa = document.getElementById('card-samsa');
+        const cardSpacio = document.getElementById('card-spacio');
+        const cardVimora = document.getElementById('card-vimora');
+        const cardMmpp = document.getElementById('card-mmpp');
+        const cardFabrica = document.getElementById('card-fabrica');
+        
+        const infoCount = document.getElementById('info-count');
+        const infoTimestamp = document.getElementById('info-timestamp');
+        const toast = document.getElementById('toast');
+        const toastIcon = document.getElementById('toast-icon');
+        const toastMessage = document.getElementById('toast-message');
+
+        // Setup Events
+        btnSync.addEventListener('click', runExtraction);
+        btnExport.addEventListener('click', exportToERP);
+        searchInput.addEventListener('input', filterCards);
+
+        // Check if this is running as static or Flask backend
+        const isStaticBuild = window.location.hostname !== '127.0.0.1' && window.location.hostname !== 'localhost';
+
+        // Initialize App on load
+        window.addEventListener('DOMContentLoaded', () => {
+            updateFavoritesUI();
+            
+            if (staticCatalog && staticCatalog.length > 0) {
+                // If static catalog is pre-compiled, load it instantly!
+                groupedProducts = staticCatalog;
+                
+                // Show cards and categories immediately without loading overlay
+                renderCards(groupedProducts);
+                renderPortalDashboard(groupedProducts);
+                
+                // Update status cards of providers to green showing static status
+                updateCardStatus(cardSamsa, 'success', 'Sincronizado', '');
+                updateCardStatus(cardSpacio, 'success', 'Sincronizado', '');
+                updateCardStatus(cardVimora, 'success', 'Sincronizado', '');
+                updateCardStatus(cardMmpp, 'success', 'Sincronizado', '');
+                updateCardStatus(cardFabrica, 'success', 'Sincronizado', '');
+                
+                // Enable search and export
+                searchInput.disabled = false;
+                btnExport.disabled = false;
+                
+                // If it is a Vercel static build, rename sync button to "Actualizar catálogo" or explain static
+                if (isStaticBuild) {
+                    btnSync.innerHTML = "<i class='bx bx-check-double'></i> Catálogo Estático (Vercel)";
+                    btnSync.disabled = true;
+                    btnSync.classList.add('btn-secondary');
+                    btnSync.classList.remove('btn-primary');
+                }
+                
+                const now = new Date();
+                infoTimestamp.textContent = `Modo: Estático (Vercel) | ${groupedProducts.length} productos cargados`;
+            } else {
+                // Normal dynamic mode: requires manual synchronization click
+                console.log("No precompiled catalog found. Run synchronization.");
+            }
+        });
+
+        // Category pills click events
+        document.querySelectorAll('.category-pill').forEach(pill => {
+            pill.addEventListener('click', () => {
+                document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+                activeCategory = pill.getAttribute('data-category');
+                filterCards();
+            });
+        });
+
+        // Popular Categories Card click events
+        document.querySelectorAll('.category-portal-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const category = card.getAttribute('data-category');
+                activeCategory = category;
+                document.querySelectorAll('.category-pill').forEach(p => {
+                    if (p.getAttribute('data-category') === category) {
+                        p.classList.add('active');
+                    } else {
+                        p.classList.remove('active');
+                    }
+                });
+                filterCards();
+                categoriesBar.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+
+        // Toast Helper
+        function showToast(message, type = 'success') {
+            toastMessage.textContent = message;
+            toast.className = 'toast show';
+            toastIcon.className = 'bx';
+            
+            if (type === 'success') {
+                toast.classList.add('toast-success');
+                toastIcon.classList.add('bx-check-circle');
+            } else {
+                toast.classList.add('toast-error');
+                toastIcon.classList.add('bx-x-circle');
+            }
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Favorites System
+        function toggleFavorite(normName, e) {
+            if (e) {
+                e.stopPropagation();
+            }
+            const index = favorites.indexOf(normName);
+            if (index === -1) {
+                favorites.push(normName);
+                showToast('Añadido a favoritos', 'success');
+            } else {
+                favorites.splice(index, 1);
+                showToast('Eliminado de favoritos', 'success');
+            }
+            localStorage.setItem('todo_insumos_favorites', JSON.stringify(favorites));
+            updateFavoritesUI();
+            
+            if (activeCategory === 'favoritos') {
+                filterCards();
+            }
+        }
+        
+        function updateFavoritesUI() {
+            document.getElementById('fav-count').textContent = favorites.length;
+            
+            document.querySelectorAll('.fav-btn').forEach(btn => {
+                const norm = btn.getAttribute('data-norm');
+                if (favorites.includes(norm)) {
+                    btn.classList.add('active');
+                    btn.innerHTML = `<i class='bx bxs-star'></i>`;
+                } else {
+                    btn.classList.remove('active');
+                    btn.innerHTML = `<i class='bx bx-star'></i>`;
+                }
+            });
+        }
+
+        // Fetch prices from python backend API (Only runs on localhost)
+        async function runExtraction() {
+            if (isStaticBuild) return;
+
+            // UI setup for loading
+            loaderView.classList.add('active');
+            btnSync.disabled = true;
+            btnExport.disabled = true;
+            searchInput.disabled = true;
+            
+            // Hide portal sections during load
+            portalCategoriesSection.style.display = 'none';
+            portalDealsSection.style.display = 'none';
+            categoriesBar.style.display = 'none';
+            
+            // Reset cards styling to waiting state
+            updateCardStatus(cardSamsa, 'waiting', '-', '');
+            updateCardStatus(cardSpacio, 'waiting', '-', '');
+            updateCardStatus(cardVimora, 'waiting', '-', '');
+            updateCardStatus(cardMmpp, 'waiting', '-', '');
+            updateCardStatus(cardFabrica, 'waiting', '-', '');
+
+            try {
+                const response = await fetch('/api/extraer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP Error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    groupedProducts = data.grouped_products || [];
+                    
+                    // Update Provider Cards from summary
+                    updateProvidersSummary(data.summary);
+                    
+                    // Render Cards Grid
+                    renderCards(groupedProducts);
+                    
+                    // Calculate and render SoloTodo home portal elements
+                    renderPortalDashboard(groupedProducts);
+                    
+                    // Enable searching and export
+                    searchInput.disabled = false;
+                    if (groupedProducts.length > 0) {
+                        btnExport.disabled = false;
+                    }
+                    
+                    // Update timestamp
+                    const now = new Date();
+                    infoTimestamp.textContent = `Última actualización: ${now.toLocaleDateString()} a las ${now.toLocaleTimeString()}`;
+                    
+                    showToast(`Sincronización completa: ${data.total_extracted} variantes agrupadas.`);
+                } else {
+                    throw new Error(data.error || 'Error desconocido del servidor');
+                }
+            } catch (error) {
+                console.error('Error during extraction:', error);
+                showToast(`Fallo de conexión: ${error.message}`, 'error');
+                
+                updateCardStatus(cardSamsa, 'error', '0', 'Fallo de conexión');
+                updateCardStatus(cardSpacio, 'error', '0', 'Fallo de conexión');
+                updateCardStatus(cardVimora, 'error', '0', 'Fallo de conexión');
+                updateCardStatus(cardMmpp, 'error', '0', 'Fallo de conexión');
+                updateCardStatus(cardFabrica, 'error', '0', 'Fallo de conexión');
+                
+                // Clear grid
+                comparisonGrid.innerHTML = '';
+                comparisonGrid.appendChild(emptyState);
+            } finally {
+                loaderView.classList.remove('active');
+                btnSync.disabled = false;
+            }
+        }
+
+        // Update CSS state helper for the summary cards
+        function updateCardStatus(cardEl, status, count, errorMsg) {
+            cardEl.className = `provider-card status-${status}`;
+            cardEl.querySelector('.status-lbl').textContent = status === 'waiting' ? 'Espera' : (status === 'success' ? 'Éxito' : 'Fallo');
+            cardEl.querySelector('.count-value').textContent = count;
+            
+            const errEl = cardEl.querySelector('.error-details');
+            if (errorMsg) {
+                errEl.textContent = errorMsg;
+            } else {
+                errEl.textContent = '';
+            }
+        }
+
+        // Update cards from API summary response
+        function updateProvidersSummary(summary) {
+            if (!summary) return;
+
+            // Samsa Aromas
+            const samsa = summary['Samsa Aromas'];
+            if (samsa) {
+                updateCardStatus(cardSamsa, samsa.status, samsa.count, ...[samsa.error || '']);
+            }
+            
+            // Spacio Natural
+            const spacio = summary['Spacio Natural'];
+            if (spacio) {
+                updateCardStatus(cardSpacio, spacio.status, spacio.count, ...[spacio.error || '']);
+            }
+
+            // Vimora Natural
+            const vimora = summary['Vimora Natural'];
+            if (vimora) {
+                updateCardStatus(cardVimora, vimora.status, vimora.count, ...[vimora.error || '']);
+            }
+
+            // MMPP
+            const mmpp = summary['MMPP'];
+            if (mmpp) {
+                updateCardStatus(cardMmpp, mmpp.status, mmpp.count, ...[mmpp.error || '']);
+            }
+
+            // Fábrica de Velas
+            const fabrica = summary['Fábrica de Velas'];
+            if (fabrica) {
+                updateCardStatus(cardFabrica, fabrica.status, fabrica.count, ...[fabrica.error || '']);
+            }
+        }
+
+        // Render Grouped Product Cards Grid
+        function renderCards(products) {
+            comparisonGrid.innerHTML = '';
+
+            if (products.length === 0) {
+                comparisonGrid.appendChild(emptyState);
+                infoCount.textContent = 'Mostrando: 0 productos agrupados';
+                return;
+            }
+
+            products.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'product-compare-card';
+                card.setAttribute('data-name', p.display_name.toLowerCase());
+                card.setAttribute('data-norm', p.normalized_name.toLowerCase());
+                card.setAttribute('data-category', p.category);
+
+                // Card Header Main Layout (Left: Image, Right: Title & Category)
+                const headerMain = document.createElement('div');
+                headerMain.className = 'card-header-main';
+                
+                // Add Favorite Button in the corner
+                const favBtn = document.createElement('button');
+                favBtn.className = 'fav-btn';
+                favBtn.setAttribute('data-norm', p.normalized_name);
+                favBtn.style.position = 'absolute';
+                favBtn.style.top = '0';
+                favBtn.style.right = '0';
+                favBtn.style.zIndex = '5';
+                favBtn.innerHTML = favorites.includes(p.normalized_name) ? `<i class='bx bxs-star'></i>` : `<i class='bx bx-star'></i>`;
+                if (favorites.includes(p.normalized_name)) favBtn.classList.add('active');
+                favBtn.addEventListener('click', (e) => toggleFavorite(p.normalized_name, e));
+                headerMain.appendChild(favBtn);
+                
+                const imgCont = document.createElement('div');
+                imgCont.className = 'product-card-image-container';
+                const img = document.createElement('img');
+                img.className = 'product-card-image';
+                img.src = p.image_url || '';
+                img.alt = p.display_name;
+                
+                // Set fallback on load error or empty image
+                if (!p.image_url) {
+                    imgCont.innerHTML = `<div style="font-size: 1.5rem; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; background: linear-gradient(135deg, hsl(223, 47%, 10%) 0%, hsl(223, 47%, 20%) 100%);">${getProductIconHTML(p.normalized_name)}</div>`;
+                } else {
+                    img.onerror = () => {
+                        imgCont.innerHTML = `<div style="font-size: 1.5rem; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; background: linear-gradient(135deg, hsl(223, 47%, 10%) 0%, hsl(223, 47%, 20%) 100%);">${getProductIconHTML(p.normalized_name)}</div>`;
+                    };
+                    imgCont.appendChild(img);
+                }
+                headerMain.appendChild(imgCont);
+                
+                const headerInfo = document.createElement('div');
+                headerInfo.className = 'card-header-info';
+                
+                const catBadge = document.createElement('span');
+                catBadge.className = 'card-category-badge';
+                catBadge.textContent = p.category;
+                headerInfo.appendChild(catBadge);
+                
+                const titleSpan = document.createElement('h3');
+                titleSpan.className = 'product-name-title';
+                titleSpan.innerHTML = `<span>${p.display_name}</span>`;
+                headerInfo.appendChild(titleSpan);
+                
+                headerMain.appendChild(headerInfo);
+                card.appendChild(headerMain);
+
+                // Table Container
+                const tableCont = document.createElement('div');
+                tableCont.className = 'compare-table-container';
+
+                const table = document.createElement('table');
+                table.className = 'compare-table';
+
+                // Table Header
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Formato</th>
+                            <th>Proveedor / Precio</th>
+                            <th style="text-align: right;">Mejor Opción</th>
+                        </tr>
+                    </thead>
+                `;
+
+                const tbody = document.createElement('tbody');
+
+                // Fill rows by size formats (iterates over list of objects)
+                p.formats.forEach(fObj => {
+                    const formatSize = fObj.size;
+                    const providersList = fObj.providers;
+                    const tr = document.createElement('tr');
+
+                    // If multiple providers sell this size, the first one is the cheapest (already sorted in backend)
+                    const isMultiple = providersList.length > 1;
+                    
+                    // Col 1: Format Size
+                    const tdSize = document.createElement('td');
+                    tdSize.innerHTML = `<span class="size-badge">${formatSize}</span>`;
+                    tr.appendChild(tdSize);
+
+                    // Col 2: Providers and Prices
+                    const tdProv = document.createElement('td');
+                    let provHTML = '';
+                    providersList.forEach((prov, index) => {
+                        const isCheapest = isMultiple && index === 0;
+                        const cheapestClass = isCheapest ? 'style="color: var(--success); font-weight: 700;"' : '';
+                        
+                        provHTML += `
+                            <div class="price-badge" style="margin-bottom: 0.25rem; &:last-child { margin-bottom: 0; }">
+                                <span class="price-value" ${cheapestClass}>
+                                    ${getProviderIconHTML(prov.provider)} ${prov.original_price}
+                                </span>
+                                <span class="price-provider" style="${isCheapest ? 'color: var(--success); opacity: 0.8;' : ''}">
+                                    ${prov.provider}
+                                </span>
+                            </div>
+                        `;
+                    });
+                    tdProv.innerHTML = provHTML;
+                    tr.appendChild(tdProv);
+
+                    // Col 3: Link/Action and Cheapest Highlight
+                    const tdAction = document.createElement('td');
+                    tdAction.style.textAlign = 'right';
+                    tdAction.style.verticalAlign = 'middle';
+
+                    const winner = providersList[0];
+                    if (isMultiple) {
+                        tr.className = 'cheapest-row';
+                        tdAction.innerHTML = `
+                            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.2rem;">
+                                <span class="cheapest-badge"><i class='bx bxs-star'></i> Ahorro</span>
+                                <a href="${winner.url}" target="_blank" class="shop-tag">
+                                    Ir <i class='bx bx-right-arrow-alt'></i>
+                                </a>
+                            </div>
+                        `;
+                    } else {
+                        tdAction.innerHTML = `
+                            <a href="${winner.url}" target="_blank" class="shop-tag">
+                                Ir <i class='bx bx-right-arrow-alt'></i>
+                            </a>
+                        `;
+                    }
+                    tr.appendChild(tdAction);
+
+                    tbody.appendChild(tr);
+                });
+
+                table.appendChild(tbody);
+                tableCont.appendChild(table);
+                card.appendChild(tableCont);
+
+                // Add Suggested Alternatives Section if there are matches in the same category
+                const alternatives = products
+                    .filter(other => other.category === p.category && other.normalized_name !== p.normalized_name)
+                    .slice(0, 4);
+                
+                if (alternatives.length > 0) {
+                    const altSection = document.createElement('div');
+                    altSection.className = 'alternatives-section';
+                    
+                    const altLabel = document.createElement('span');
+                    altLabel.className = 'alternatives-label';
+                    altLabel.innerHTML = `<i class='bx bx-git-pull-request'></i> Alternativas:`;
+                    altSection.appendChild(altLabel);
+                    
+                    const altList = document.createElement('div');
+                    altList.className = 'alternatives-list';
+                    
+                    alternatives.forEach(alt => {
+                        const altPill = document.createElement('button');
+                        altPill.className = 'alternative-pill';
+                        altPill.textContent = alt.display_name;
+                        altPill.addEventListener('click', () => {
+                            navigateToProduct(alt.normalized_name, alt.category);
+                        });
+                        altList.appendChild(altPill);
+                    });
+                    
+                    altSection.appendChild(altList);
+                    card.appendChild(altSection);
+                }
+
+                comparisonGrid.appendChild(card);
+            });
+
+            infoCount.textContent = `Mostrando: ${products.length} productos agrupados`;
+            updateFavoritesUI();
+        }
+
+        // Render SoloTodo Portal Section (Categories and Deals of the Day)
+        function renderPortalDashboard(products) {
+            // 1. Update Category Counts
+            const cerasCount = products.filter(p => p.category === 'Ceras').length;
+            const fraganciasCount = products.filter(p => p.category === 'Fragancias').length;
+            const aceitesCount = products.filter(p => p.category === 'Aceites y Materias Primas').length;
+            const moldesCount = products.filter(p => p.category === 'Moldes').length;
+
+            document.getElementById('count-ceras').textContent = `${cerasCount} productos`;
+            document.getElementById('count-fragancias').textContent = `${fraganciasCount} productos`;
+            document.getElementById('count-aceites').textContent = `${aceitesCount} productos`;
+            document.getElementById('count-moldes').textContent = `${moldesCount} productos`;
+
+            portalCategoriesSection.style.display = 'block';
+            categoriesBar.style.display = 'flex';
+
+            // 2. Calculate and Render Deals of the Day (Mayores Ahorros)
+            renderDeals(products);
+        }
+
+        // Calculate Deals from Cross-supplier prices
+        function calculateBestDeals(products) {
+            const deals = [];
+            products.forEach(p => {
+                p.formats.forEach(fObj => {
+                    const providers = fObj.providers;
+                    if (providers.length > 1) {
+                        const minPrice = providers[0].price;
+                        const maxPrice = providers[providers.length - 1].price;
+                        const savings = maxPrice - minPrice;
+                        const savingsPct = Math.round((savings / maxPrice) * 100);
+                        
+                        if (savings > 0) {
+                            deals.push({
+                                productName: p.display_name,
+                                normalizedName: p.normalized_name,
+                                category: p.category,
+                                size: fObj.size,
+                                cheapestPrice: minPrice,
+                                cheapestFormatted: providers[0].original_price,
+                                cheapestProvider: providers[0].provider,
+                                savings: savings,
+                                savingsFormatted: `$${savings.toLocaleString('es-CL')}`,
+                                savingsPct: savingsPct,
+                                image: p.image_url || ''
+                            });
+                        }
+                    }
+                });
+            });
+            
+            // Sort by savings percentage descending
+            deals.sort((a, b) => b.savingsPct - a.savingsPct);
+            return deals.slice(0, 4); // Top 4 deals
+        }
+
+        // Render Deals Cards
+        function renderDeals(products) {
+            const dealsGrid = document.getElementById('deals-grid');
+            dealsGrid.innerHTML = '';
+            
+            const bestDeals = calculateBestDeals(products);
+            if (bestDeals.length === 0) {
+                portalDealsSection.style.display = 'none';
+                return;
+            }
+            
+            portalDealsSection.style.display = 'block';
+            
+            bestDeals.forEach(deal => {
+                const card = document.createElement('div');
+                card.className = 'deal-card';
+                
+                const imageSrc = deal.image ? deal.image : 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="%236366f1" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>';
+                
+                card.innerHTML = `
+                    <span class="deal-badge"><i class='bx bxs-hot'></i> -${deal.savingsPct}%</span>
+                    <div class="deal-image-container">
+                        <img class="deal-image" src="${imageSrc}" alt="${deal.productName}" onerror="this.outerHTML='<div style=\'font-size:1.5rem;\'>${getProductIconHTML(deal.normalizedName)}</div>';">
+                    </div>
+                    <div class="deal-info">
+                        <span class="deal-name">${deal.productName}</span>
+                        <span class="size-badge" style="width: fit-content; margin-top: 0.15rem;">${deal.size}</span>
+                    </div>
+                    <div class="deal-pricing">
+                        <div class="deal-price-block">
+                            <span class="deal-price-val">${deal.cheapestFormatted}</span>
+                            <span class="deal-provider">${deal.cheapestProvider}</span>
+                        </div>
+                        <div class="deal-savings">
+                            <span class="deal-savings-val">Ahorras ${deal.savingsFormatted}</span>
+                        </div>
+                    </div>
+                `;
+                card.addEventListener('click', () => {
+                    navigateToProduct(deal.normalizedName, deal.category);
+                });
+                dealsGrid.appendChild(card);
+            });
+        }
+
+        // Navigate, filter, scroll, and highlight selected product
+        function navigateToProduct(normName, category) {
+            // 1. Clear search query
+            searchInput.value = '';
+            
+            // 2. Select category filter
+            activeCategory = category;
+            document.querySelectorAll('.category-pill').forEach(p => {
+                if (p.getAttribute('data-category') === category) {
+                    p.classList.add('active');
+                } else {
+                    p.classList.remove('active');
+                }
+            });
+            
+            // 3. Filter cards
+            filterCards();
+            
+            // 4. Find target card
+            const targetCard = Array.from(comparisonGrid.querySelectorAll('.product-compare-card'))
+                .find(card => card.getAttribute('data-norm') === normName.toLowerCase());
+                
+            if (targetCard) {
+                // 5. Scroll smoothly
+                targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // 6. Trigger pulse glow animation
+                targetCard.classList.remove('pulse-glow-active');
+                void targetCard.offsetWidth; // Force Reflow
+                targetCard.classList.add('pulse-glow-active');
+                
+                // Cleanup animation class after 4s
+                setTimeout(() => {
+                    targetCard.classList.remove('pulse-glow-active');
+                }, 4000);
+                
+                showToast(`Mostrando alternativa: ${targetCard.querySelector('.product-name-title span').textContent}`);
+            }
+        }
+
+        // Icon mapper for providers in price rows
+        function getProviderIconHTML(provider) {
+            if (provider === 'Samsa Aromas') return "<i class='bx bxs-store-alt provider-logo-small' style='color: var(--primary);'></i>";
+            if (provider === 'Spacio Natural') return "<i class='bx bxs-spa provider-logo-small' style='color: var(--success);'></i>";
+            if (provider === 'Vimora Natural') return "<i class='bx bxs-leaf provider-logo-small' style='color: #06b6d4;'></i>";
+            if (provider === 'MMPP') return "<i class='bx bxs-flask provider-logo-small' style='color: #a78bfa;'></i>";
+            if (provider === 'Fábrica de Velas') return "<i class='bx bxs-store provider-logo-small' style='color: #f43f5e;'></i>";
+            return "<i class='bx bx-globe provider-logo-small'></i>";
+        }
+
+        // Icon mapper for Product Categories (Deco)
+        function getProductIconHTML(normName) {
+            const name = normName.toLowerCase();
+            if (name.includes('coco') || name.includes('almendra') || name.includes('jojoba') || name.includes('ricino') || name.includes('rosa mosqueta')) {
+                return "<i class='bx bxs-flask' style='color: #a78bfa;'></i>";
+            }
+            if (name.includes('cera') || name.includes('abeja') || name.includes('soja') || name.includes('soya')) {
+                return "<i class='bx bxs-color-fill' style='color: #fbbf24;'></i>";
+            }
+            if (name.includes('molde') || name.includes('silicona')) {
+                return "<i class='bx bxs-shapes' style='color: #f43f5e;'></i>";
+            }
+            return "<i class='bx bxs-droplet' style='color: var(--primary);'></i>";
+        }
+
+        // Filter comparison cards dynamically
+        function filterCards() {
+            const query = searchInput.value.toLowerCase().trim();
+            const cards = comparisonGrid.querySelectorAll('.product-compare-card');
+
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const name = card.getAttribute('data-name');
+                const norm = card.getAttribute('data-norm');
+                const cat = card.getAttribute('data-category');
+                
+                const matchesQuery = name.includes(query) || norm.includes(query);
+                
+                let matchesCategory = false;
+                if (activeCategory === 'all') {
+                    matchesCategory = true;
+                } else if (activeCategory === 'favoritos') {
+                    matchesCategory = favorites.includes(norm);
+                } else {
+                    matchesCategory = cat === activeCategory;
+                }
+                
+                if (matchesQuery && matchesCategory) {
+                    card.style.display = '';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            infoCount.textContent = `Filtrados: ${visibleCount} de ${groupedProducts.length} productos agrupados`;
+        }
+
+        // Export grouped comparison price list to JSON for ERP
+        function exportToERP() {
+            if (groupedProducts.length === 0) {
+                showToast('No hay datos para exportar', 'error');
+                return;
+            }
+
+            const timestamp = new Date().toISOString();
+            const erpData = [];
+
+            groupedProducts.forEach(p => {
+                p.formats.forEach(fObj => {
+                    const formatSize = fObj.size;
+                    const providers = fObj.providers;
+                    providers.forEach(prov => {
+                        erpData.push({
+                            producto: p.display_name,
+                            producto_normalizado: p.normalized_name,
+                            formato: formatSize,
+                            formato_original: prov.original_size,
+                            proveedor: prov.provider,
+                            precio_entero: prov.price,
+                            precio_original: prov.original_price,
+                            url: prov.url,
+                            fecha_extraccion: timestamp
+                        });
+                    });
+                });
+            });
+
+            // Trigger file download
+            const dataStr = JSON.stringify(erpData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `comparativa_erp_${new Date().toISOString().slice(0,10)}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            showToast(`Exportación ERP exitosa: ${erpData.length} registros guardados.`);
+        }
+    </script>
+</body>
+</html>
