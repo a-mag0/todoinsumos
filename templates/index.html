@@ -1127,8 +1127,10 @@
             display: flex;
             align-items: center;
             gap: 0.6rem;
-            transform: translateY(200%);
-            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(15px);
+            transition: var(--transition-smooth);
             z-index: 100;
         }
 
@@ -1142,6 +1144,8 @@
         }
 
         .toast.show {
+            opacity: 1;
+            pointer-events: all;
             transform: translateY(0);
         }
 
@@ -1493,11 +1497,43 @@
         const toastIcon = document.getElementById('toast-icon');
         const toastMessage = document.getElementById('toast-message');
 
+        // Create emptyState element dynamically to prevent reference crash
+        const emptyState = document.createElement('div');
+        emptyState.className = 'empty-state';
+        emptyState.innerHTML = `
+            <i class='bx bx-search'></i>
+            <h3>No se encontraron productos</h3>
+            <p>Intenta con otra palabra clave o limpia el filtro de categoría.</p>
+        `;
+
         // Setup Events
         btnSync.addEventListener('click', runExtraction);
         btnExportJson.addEventListener('click', exportToJSON);
         btnExportCsv.addEventListener('click', exportToCSV);
         searchInput.addEventListener('input', filterCards);
+
+        // Setup popular category clicks on home portal view
+        document.querySelectorAll('.category-portal-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const category = card.getAttribute('data-category');
+                navigateToCategory(category);
+            });
+        });
+
+        function navigateToCategory(category) {
+            switchView('compare');
+            
+            document.querySelectorAll('.category-pill').forEach(pill => {
+                if (pill.getAttribute('data-category') === category) {
+                    pill.classList.add('active');
+                } else {
+                    pill.classList.remove('active');
+                }
+            });
+            
+            activeCategory = category;
+            filterCards();
+        }
 
         // Check environment host
         const isStaticBuild = window.location.hostname !== '127.0.0.1' && window.location.hostname !== 'localhost';
