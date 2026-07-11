@@ -1,0 +1,43 @@
+name: Actualización Diaria de Precios
+
+on:
+  schedule:
+    # Ejecutar una vez al día a las 06:00 UTC (aprox. 02:00 AM hora de Chile)
+    - cron: '0 6 * * *'
+  workflow_dispatch: # Permite ejecutar el raspado manualmente desde GitHub Actions
+
+jobs:
+  update-catalog:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clonar Repositorio
+      uses: actions/checkout@v4
+
+    - name: Configurar Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Instalar Dependencias
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Ejecutar Scrapers y Compilar index.html
+      run: |
+        python generate_vercel_build.py
+
+    - name: Registrar Cambios en Git
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add index.html
+        
+        # Comprobar si los precios cambiaron hoy
+        if ! git diff-index --quiet HEAD; then
+          git commit -m "chore: actualización automática diaria de precios [skip ci]"
+          git push
+        else
+          echo "Sin cambios detectados en los precios del catálogo hoy."
+        fi
