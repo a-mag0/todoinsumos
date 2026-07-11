@@ -64,6 +64,13 @@
             min-height: 100vh;
             line-height: 1.5;
             overflow-x: hidden;
+            padding-bottom: 75px; /* Leave space for bottom nav on mobile */
+        }
+
+        @media (min-width: 768px) {
+            body {
+                padding-bottom: 2.5rem;
+            }
         }
 
         /* Scrollbar styling */
@@ -85,7 +92,7 @@
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 1.5rem 1rem;
+            padding: 1.25rem 1rem;
         }
 
         @media (min-width: 768px) {
@@ -114,12 +121,12 @@
         header {
             position: relative;
             z-index: 1;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
             display: flex;
             flex-direction: column;
             gap: 1rem;
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 1.25rem;
+            padding-bottom: 1rem;
         }
 
         @media (min-width: 768px) {
@@ -134,7 +141,7 @@
 
         .header-title-container h1 {
             font-family: var(--font-display);
-            font-size: 2rem;
+            font-size: 1.85rem;
             font-weight: 800;
             letter-spacing: -0.5px;
             background: linear-gradient(135deg, #ffffff 40%, #c7d2fe 100%);
@@ -151,10 +158,94 @@
 
         .header-title-container p {
             color: var(--text-secondary);
-            font-size: 0.85rem;
+            font-size: 0.825rem;
             display: flex;
             align-items: center;
             gap: 0.4rem;
+        }
+
+        /* Navigation Bar (Fixed Bottom on Mobile, Top Header on Desktop) */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: hsla(222, 47%, 6%, 0.94);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 0.65rem 0;
+            z-index: 99;
+            box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.4);
+        }
+        
+        .nav-tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.2rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.65rem;
+            font-weight: 600;
+            background: none;
+            border: none;
+            cursor: pointer;
+            flex: 1;
+            transition: var(--transition-smooth);
+            font-family: var(--font-display);
+        }
+        
+        .nav-tab-item i {
+            font-size: 1.3rem;
+            transition: var(--transition-smooth);
+        }
+        
+        .nav-tab-item.active {
+            color: var(--primary-hover);
+        }
+        
+        .nav-tab-item.active i {
+            transform: translateY(-2px);
+            color: var(--primary-hover);
+        }
+
+        /* Hide bottom nav on desktop, show desktop tabs */
+        .desktop-nav {
+            display: none;
+        }
+        
+        @media (min-width: 768px) {
+            .bottom-nav {
+                display: none;
+            }
+            .desktop-nav {
+                display: flex;
+                gap: 0.5rem;
+            }
+            .desktop-nav .nav-tab-item {
+                flex-direction: row;
+                gap: 0.4rem;
+                padding: 0.55rem 1.1rem;
+                border-radius: 8px;
+                border: 1px solid var(--border-color);
+                background-color: var(--card-bg);
+                font-size: 0.85rem;
+                font-weight: 600;
+                width: auto;
+            }
+            .desktop-nav .nav-tab-item:hover {
+                border-color: var(--border-hover);
+                color: white;
+            }
+            .desktop-nav .nav-tab-item.active {
+                background: linear-gradient(135deg, var(--primary) 0%, hsl(262, 80%, 55%) 100%);
+                border-color: transparent;
+                color: white;
+                box-shadow: 0 4px 12px var(--primary-glow);
+            }
         }
 
         /* Button Styling */
@@ -199,7 +290,7 @@
             color: var(--text-primary);
         }
 
-        .btn-secondary:hover:not(:disabled) {
+        .btn-secondary:hover {
             background: hsla(223, 47%, 22%, 0.7);
             border-color: var(--border-hover);
         }
@@ -559,7 +650,7 @@
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 1rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
             position: relative;
             z-index: 1;
         }
@@ -743,7 +834,7 @@
             background-color: hsla(250, 85%, 65%, 0.08);
             color: var(--primary-hover);
             border: 1px solid hsla(250, 85%, 65%, 0.2);
-            padding: 0.1rem 0.35rem;
+            padding: 0.1/rem 0.35rem;
             border-radius: 4px;
             font-size: 0.6rem;
             font-weight: 700;
@@ -840,7 +931,7 @@
             border: 1px solid var(--success-border);
             padding: 0.1rem 0.35rem;
             border-radius: 4px;
-            font-size: 0.6rem;
+            font-size: 0.65rem;
             font-weight: 700;
             display: inline-flex;
             align-items: center;
@@ -1017,7 +1108,7 @@
         /* Toast Alert */
         .toast {
             position: fixed;
-            bottom: 1.5rem;
+            bottom: 5.5rem; /* Raised above mobile bottom nav */
             right: 1rem;
             left: 1rem;
             background-color: #1e293b;
@@ -1038,6 +1129,7 @@
                 left: auto;
                 right: 1.5rem;
                 width: 320px;
+                bottom: 1.5rem;
             }
         }
 
@@ -1071,232 +1163,266 @@
                 <h1>Todo Insumos</h1>
                 <p><i class='bx bx-git-compare'></i> El comparador inteligente de velas y jabones</p>
             </div>
-            <div>
+            
+            <!-- Desktop Top Tabs (shown on large screens) -->
+            <div class="desktop-nav">
+                <button class="nav-tab-item active" onclick="switchView('home')">
+                    <i class='bx bx-home-alt'></i>
+                    <span>Inicio</span>
+                </button>
+                <button class="nav-tab-item" onclick="switchView('compare')">
+                    <i class='bx bx-search'></i>
+                    <span>Buscar</span>
+                </button>
+                <button class="nav-tab-item" onclick="switchView('favorites')">
+                    <i class='bx bx-star'></i>
+                    <span>Favoritos</span>
+                </button>
+                <button class="nav-tab-item" onclick="switchView('settings')">
+                    <i class='bx bx-cog'></i>
+                    <span>Proveedores</span>
+                </button>
+            </div>
+
+            <!-- Sync Button -->
+            <div style="display: none;">
                 <button id="btn-sync" class="btn btn-primary">
                     <i class='bx bx-sync'></i> Sincronizar y Buscar Precios
                 </button>
             </div>
         </header>
 
-        <!-- Providers Status Cards (Swipeable) -->
-        <section class="providers-grid">
+        <!-- VIEW: HOME (Landing View) -->
+        <div id="view-home" class="app-view">
+            <!-- Popular Categories Grid -->
+            <section id="portal-categories-section" class="portal-section">
+                <h2 class="section-title"><i class='bx bxs-grid-alt'></i> Categorías Populares</h2>
+                <div class="categories-portal-grid">
+                    <!-- Ceras -->
+                    <div class="category-portal-card" data-category="Ceras">
+                        <div class="category-portal-icon" style="background-color: rgba(251, 191, 36, 0.1); color: #fbbf24;">
+                            <i class='bx bxs-color-fill'></i>
+                        </div>
+                        <span class="category-portal-title">Ceras</span>
+                        <span class="category-portal-desc">Ceras de soya BPF y APF, cera de abejas y parafina para tus velas.</span>
+                        <span class="category-portal-count" id="count-ceras">0 productos</span>
+                    </div>
+
+                    <!-- Fragancias -->
+                    <div class="category-portal-card" data-category="Fragancias">
+                        <div class="category-portal-icon" style="background-color: rgba(59, 130, 246, 0.1); color: #3b82f6;">
+                            <i class='bx bxs-droplet'></i>
+                        </div>
+                        <span class="category-portal-title">Fragancias</span>
+                        <span class="category-portal-desc">Esencias aromáticas y aromas concentrados para velas y difusores.</span>
+                        <span class="category-portal-count" id="count-fragancias">0 productos</span>
+                    </div>
+
+                    <!-- Aceites y Materias Primas -->
+                    <div class="category-portal-card" data-category="Aceites y Materias Primas">
+                        <div class="category-portal-icon" style="background-color: rgba(167, 139, 250, 0.1); color: #a78bfa;">
+                            <i class='bx bxs-flask'></i>
+                        </div>
+                        <span class="category-portal-title">Materias Primas</span>
+                        <span class="category-portal-desc">Aceites portadores, mantecas naturales, pabilos, micas y aditivos.</span>
+                        <span class="category-portal-count" id="count-aceites">0 productos</span>
+                    </div>
+
+                    <!-- Moldes -->
+                    <div class="category-portal-card" data-category="Moldes">
+                        <div class="category-portal-icon" style="background-color: rgba(244, 63, 94, 0.1); color: #f43f5e;">
+                            <i class='bx bxs-shapes'></i>
+                        </div>
+                        <span class="category-portal-title">Moldes</span>
+                        <span class="category-portal-desc">Moldes de silicona cilíndricos, decorativos y formas 3D.</span>
+                        <span class="category-portal-count" id="count-moldes">0 productos</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Deals of the Day Grid -->
+            <section id="portal-deals-section" class="portal-section">
+                <h2 class="section-title"><i class='bx bxs-hot' style="color:#f43f5e;"></i> Ofertas del Día (Mayores Ahorros)</h2>
+                <div id="deals-grid" class="deals-grid">
+                    <!-- Calculated deals cards go here -->
+                </div>
+            </section>
+        </div>
+
+        <!-- VIEW: COMPARE (Uncluttered Catalog Search View) -->
+        <div id="view-compare" class="app-view" style="display: none;">
             
-            <!-- Samsa Aromas Card -->
-            <div id="card-samsa" class="provider-card status-waiting">
-                <div class="card-header">
-                    <span class="provider-title">
-                        <i class='bx bxs-store-alt'></i> Samsa
-                    </span>
-                    <span class="provider-status status-lbl">Espera</span>
-                </div>
-                <div class="card-body">
-                    <div class="product-count">
-                        <span class="count-value">-</span>
-                        <span class="count-lbl">Variantes</span>
-                    </div>
-                    <a href="https://samsaaromas.com/collections/aromas" target="_blank" class="provider-link">
-                        Ver <i class='bx bx-right-top-arrow-circle'></i>
-                    </a>
-                </div>
-                <div class="error-details"></div>
-            </div>
+            <!-- Category Filter Pills Bar -->
+            <section id="categories-bar" class="categories-filter-bar">
+                <button class="category-pill active" data-category="all">Todos</button>
+                <button class="category-pill" data-category="Fragancias">Fragancias</button>
+                <button class="category-pill" data-category="Ceras">Ceras</button>
+                <button class="category-pill" data-category="Aceites y Materias Primas">Insumos y Aditivos</button>
+                <button class="category-pill" data-category="Moldes">Moldes</button>
+            </section>
 
-            <!-- Spacio Natural Card -->
-            <div id="card-spacio" class="provider-card status-waiting">
-                <div class="card-header">
-                    <span class="provider-title">
-                        <i class='bx bxs-spa'></i> Spacio
-                    </span>
-                    <span class="provider-status status-lbl">Espera</span>
+            <!-- Actions Search Toolbar -->
+            <section class="toolbar">
+                <div class="toolbar-title">
+                    <i class='bx bx-search-alt'></i> Buscar en el Catálogo
                 </div>
-                <div class="card-body">
-                    <div class="product-count">
-                        <span class="count-value">-</span>
-                        <span class="count-lbl">Variantes</span>
-                    </div>
-                    <a href="https://www.spacionatural.cl/" target="_blank" class="provider-link">
-                        Ver <i class='bx bx-right-top-arrow-circle'></i>
-                    </a>
-                </div>
-                <div class="error-details"></div>
-            </div>
-
-            <!-- Vimora Natural Card -->
-            <div id="card-vimora" class="provider-card status-waiting">
-                <div class="card-header">
-                    <span class="provider-title">
-                        <i class='bx bxs-leaf'></i> Vimora
-                    </span>
-                    <span class="provider-status status-lbl">Espera</span>
-                </div>
-                <div class="card-body">
-                    <div class="product-count">
-                        <span class="count-value">-</span>
-                        <span class="count-lbl">Variantes</span>
-                    </div>
-                    <a href="https://www.vimoranatural.cl/" target="_blank" class="provider-link">
-                        Ver <i class='bx bx-right-top-arrow-circle'></i>
-                    </a>
-                </div>
-                <div class="error-details"></div>
-            </div>
-
-            <!-- MMPP Card -->
-            <div id="card-mmpp" class="provider-card status-waiting">
-                <div class="card-header">
-                    <span class="provider-title">
-                        <i class='bx bxs-flask' style="color: #a78bfa;"></i> MMPP
-                    </span>
-                    <span class="provider-status status-lbl">Espera</span>
-                </div>
-                <div class="card-body">
-                    <div class="product-count">
-                        <span class="count-value">-</span>
-                        <span class="count-lbl">Variantes</span>
-                    </div>
-                    <a href="https://mmpp.cl/categoria/insumos-para-velas/" target="_blank" class="provider-link">
-                        Ver <i class='bx bx-right-top-arrow-circle'></i>
-                    </a>
-                </div>
-                <div class="error-details"></div>
-            </div>
-
-            <!-- Fábrica de Velas Card -->
-            <div id="card-fabrica" class="provider-card status-waiting">
-                <div class="card-header">
-                    <span class="provider-title">
-                        <i class='bx bxs-store' style="color: #f43f5e;"></i> F. de Velas
-                    </span>
-                    <span class="provider-status status-lbl">Espera</span>
-                </div>
-                <div class="card-body">
-                    <div class="product-count">
-                        <span class="count-value">-</span>
-                        <span class="count-lbl">Variantes</span>
-                    </div>
-                    <a href="https://fabricadevelas.cl/collections/insumos-velas" target="_blank" class="provider-link">
-                        Ver <i class='bx bx-right-top-arrow-circle'></i>
-                    </a>
-                </div>
-                <div class="error-details"></div>
-            </div>
-
-        </section>
-
-        <!-- Popular Categories Section -->
-        <section id="portal-categories-section" class="portal-section" style="display: none;">
-            <h2 class="section-title"><i class='bx bxs-grid-alt'></i> Categorías Populares</h2>
-            <div class="categories-portal-grid">
-                
-                <!-- Ceras -->
-                <div class="category-portal-card" data-category="Ceras">
-                    <div class="category-portal-icon" style="background-color: rgba(251, 191, 36, 0.1); color: #fbbf24;">
-                        <i class='bx bxs-color-fill'></i>
-                    </div>
-                    <span class="category-portal-title">Ceras</span>
-                    <span class="category-portal-desc">Ceras de soya BPF y APF, cera de abejas y parafina para tus velas.</span>
-                    <span class="category-portal-count" id="count-ceras">0 productos</span>
-                </div>
-
-                <!-- Fragancias -->
-                <div class="category-portal-card" data-category="Fragancias">
-                    <div class="category-portal-icon" style="background-color: rgba(59, 130, 246, 0.1); color: #3b82f6;">
-                        <i class='bx bxs-droplet'></i>
-                    </div>
-                    <span class="category-portal-title">Fragancias</span>
-                    <span class="category-portal-desc">Esencias aromáticas y aromas concentrados para velas y difusores.</span>
-                    <span class="category-portal-count" id="count-fragancias">0 productos</span>
-                </div>
-
-                <!-- Aceites y Materias Primas -->
-                <div class="category-portal-card" data-category="Aceites y Materias Primas">
-                    <div class="category-portal-icon" style="background-color: rgba(167, 139, 250, 0.1); color: #a78bfa;">
-                        <i class='bx bxs-flask'></i>
-                    </div>
-                    <span class="category-portal-title">Materias Primas</span>
-                    <span class="category-portal-desc">Aceites portadores, mantecas naturales, pabilos, micas y aditivos.</span>
-                    <span class="category-portal-count" id="count-aceites">0 productos</span>
-                </div>
-
-                <!-- Moldes -->
-                <div class="category-portal-card" data-category="Moldes">
-                    <div class="category-portal-icon" style="background-color: rgba(244, 63, 94, 0.1); color: #f43f5e;">
-                        <i class='bx bxs-shapes'></i>
-                    </div>
-                    <span class="category-portal-title">Moldes</span>
-                    <span class="category-portal-desc">Moldes de silicona cilíndricos, decorativos y formas 3D.</span>
-                    <span class="category-portal-count" id="count-moldes">0 productos</span>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- Deals of the Day Section -->
-        <section id="portal-deals-section" class="portal-section" style="display: none;">
-            <h2 class="section-title"><i class='bx bxs-hot'></i> Ofertas del Día (Mayores Ahorros)</h2>
-            <div id="deals-grid" class="deals-grid">
-                <!-- Calculated deals cards will go here -->
-            </div>
-        </section>
-
-        <!-- Category Pills Filter Bar -->
-        <section id="categories-bar" class="categories-filter-bar" style="display: none;">
-            <button class="category-pill active" data-category="all">Todos</button>
-            <button class="category-pill" data-category="Fragancias">Fragancias</button>
-            <button class="category-pill" data-category="Ceras">Ceras</button>
-            <button class="category-pill" data-category="Aceites y Materias Primas">Insumos y Aditivos</button>
-            <button class="category-pill" data-category="Moldes">Moldes</button>
-            <button class="category-pill" data-category="favoritos" id="pill-favorites" style="border-color: hsla(45, 93%, 47%, 0.35);"><i class='bx bxs-star' style="color: #eab308; margin-right: 0.15rem;"></i> Favoritos (<span id="fav-count">0</span>)</button>
-        </section>
-
-        <!-- Actions Toolbar -->
-        <section class="toolbar">
-            <div class="toolbar-title">
-                <i class='bx bx-search-alt'></i> Comparativa de Catálogos
-            </div>
-            
-            <div style="display: flex; gap: 1rem; flex-wrap: wrap; width: 100%; max-width: 550px; justify-content: flex-end;">
                 <div class="search-container">
                     <i class='bx bx-search'></i>
-                    <input type="text" id="search-input" class="search-input" placeholder="Buscar esencia (ej: coco, cera)..." disabled>
+                    <input type="text" id="search-input" class="search-input" placeholder="Buscar esencia (ej: coco, cera)...">
                 </div>
-                <button id="btn-export" class="btn btn-secondary" disabled>
-                    <i class='bx bx-export'></i> Exportar a ERP
-                </button>
-            </div>
-        </section>
-
-        <!-- Main Comparison Cards View -->
-        <main style="position: relative;">
-            
-            <!-- Loader Overlay -->
-            <div id="loader-view" class="loader-overlay">
-                <div class="spinner"></div>
-                <span class="loader-text">Cargando catálogo...</span>
-                <span class="loader-subtext">Sincronizando la base de datos de precios. Esto tomará un momento.</span>
-            </div>
+            </section>
 
             <!-- Comparison Cards Grid -->
             <div id="comparison-grid" class="comparison-grid">
-                
-                <!-- Default Empty State -->
-                <div id="empty-state" class="empty-state">
-                    <i class='bx bx-git-compare'></i>
-                    <h3>No hay comparativas cargadas</h3>
-                    <p>Haz clic en "Sincronizar y Buscar Precios" para iniciar el mapeo de variantes.</p>
+                <!-- Comparison cards rendered here -->
+            </div>
+        </div>
+
+        <!-- VIEW: FAVORITES -->
+        <div id="view-favorites" class="app-view" style="display: none;">
+            <h2 class="section-title"><i class='bx bxs-star' style="color: #eab308;"></i> Mis Favoritos Guardados</h2>
+            <div id="favorites-grid" class="comparison-grid">
+                <!-- Stars products rendered here -->
+            </div>
+        </div>
+
+        <!-- VIEW: SETTINGS & MONITORING -->
+        <div id="view-settings" class="app-view" style="display: none;">
+            <h2 class="section-title"><i class='bx bxs-cog'></i> Monitoreo de Proveedores y Exportación</h2>
+            
+            <!-- Providers Status Cards (Swipeable) -->
+            <section class="providers-grid" style="margin-bottom: 2rem;">
+                <!-- Samsa -->
+                <div id="card-samsa" class="provider-card">
+                    <div class="card-header">
+                        <span class="provider-title"><i class='bx bxs-store-alt'></i> Samsa</span>
+                        <span class="provider-status status-lbl">Espera</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="product-count">
+                            <span class="count-value">-</span>
+                            <span class="count-lbl">Variantes</span>
+                        </div>
+                        <a href="https://samsaaromas.com/collections/aromas" target="_blank" class="provider-link">Ver <i class='bx bx-right-top-arrow-circle'></i></a>
+                    </div>
+                    <div class="error-details"></div>
                 </div>
 
-            </div>
+                <!-- Spacio Natural -->
+                <div id="card-spacio" class="provider-card">
+                    <div class="card-header">
+                        <span class="provider-title"><i class='bx bxs-spa'></i> Spacio</span>
+                        <span class="provider-status status-lbl">Espera</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="product-count">
+                            <span class="count-value">-</span>
+                            <span class="count-lbl">Variantes</span>
+                        </div>
+                        <a href="https://www.spacionatural.cl/" target="_blank" class="provider-link">Ver <i class='bx bx-right-top-arrow-circle'></i></a>
+                    </div>
+                    <div class="error-details"></div>
+                </div>
 
-            <!-- Footer Details -->
-            <div class="panel-footer">
-                <span id="info-count">Mostrando: 0 productos agrupados</span>
-                <span id="info-timestamp">Última actualización: Nunca</span>
-            </div>
+                <!-- Vimora -->
+                <div id="card-vimora" class="provider-card">
+                    <div class="card-header">
+                        <span class="provider-title"><i class='bx bxs-leaf'></i> Vimora</span>
+                        <span class="provider-status status-lbl">Espera</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="product-count">
+                            <span class="count-value">-</span>
+                            <span class="count-lbl">Variantes</span>
+                        </div>
+                        <a href="https://www.vimoranatural.cl/" target="_blank" class="provider-link">Ver <i class='bx bx-right-top-arrow-circle'></i></a>
+                    </div>
+                    <div class="error-details"></div>
+                </div>
 
-        </main>
+                <!-- MMPP -->
+                <div id="card-mmpp" class="provider-card">
+                    <div class="card-header">
+                        <span class="provider-title"><i class='bx bxs-flask' style="color:#a78bfa;"></i> MMPP</span>
+                        <span class="provider-status status-lbl">Espera</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="product-count">
+                            <span class="count-value">-</span>
+                            <span class="count-lbl">Variantes</span>
+                        </div>
+                        <a href="https://mmpp.cl/categoria/insumos-para-velas/" target="_blank" class="provider-link">Ver <i class='bx bx-right-top-arrow-circle'></i></a>
+                    </div>
+                    <div class="error-details"></div>
+                </div>
+
+                <!-- Fabrica -->
+                <div id="card-fabrica" class="provider-card">
+                    <div class="card-header">
+                        <span class="provider-title"><i class='bx bxs-store' style="color:#f43f5e;"></i> F. de Velas</span>
+                        <span class="provider-status status-lbl">Espera</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="product-count">
+                            <span class="count-value">-</span>
+                            <span class="count-lbl">Variantes</span>
+                        </div>
+                        <a href="https://fabricadevelas.cl/collections/insumos-velas" target="_blank" class="provider-link">Ver <i class='bx bx-right-top-arrow-circle'></i></a>
+                    </div>
+                    <div class="error-details"></div>
+                </div>
+            </section>
+
+            <!-- Export Databases Panel -->
+            <div style="background-color: var(--card-bg); border: 1px solid var(--border-color); padding: 1.5rem; border-radius: 12px; display: flex; flex-direction: column; gap: 1rem; position: relative; z-index: 1;">
+                <h3 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; color: white;"><i class='bx bx-export' style="color: var(--primary);"></i> Exportar Base de Precios</h3>
+                <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.4;">Descarga los precios y formatos cruzados en tiempo real para alimentar otras hojas de cálculo, sistemas ERP, o importar la base directamente en Microsoft Excel.</p>
+                
+                <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                    <button id="btn-export-csv" class="btn btn-primary" style="flex: 1; min-width: 150px;">
+                        <i class='bx bx-table'></i> Descargar CSV (Excel)
+                    </button>
+                    <button id="btn-export-json" class="btn btn-secondary" style="flex: 1; min-width: 150px;">
+                        <i class='bx bx-code-block'></i> Descargar JSON (ERP)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Details -->
+        <footer class="panel-footer" style="position: relative; z-index: 1;">
+            <span id="info-count">Mostrando: 0 productos agrupados</span>
+            <span id="info-timestamp">Última actualización: Modo Estático</span>
+        </footer>
+
+        <!-- Loader Overlay -->
+        <div id="loader-view" class="loader-overlay">
+            <div class="spinner"></div>
+            <span class="loader-text">Sincronizando Precios...</span>
+            <span class="loader-subtext">Cargando base de datos consolidada.</span>
+        </div>
         
     </div>
+
+    <!-- Mobile Navigation Bar (Fixed Bottom) -->
+    <nav class="bottom-nav">
+        <button class="nav-tab-item active" onclick="switchView('home')">
+            <i class='bx bx-home-alt'></i>
+            <span>Inicio</span>
+        </button>
+        <button class="nav-tab-item" onclick="switchView('compare')">
+            <i class='bx bx-search'></i>
+            <span>Buscar</span>
+        </button>
+        <button class="nav-tab-item" onclick="switchView('favorites')">
+            <i class='bx bx-star'></i>
+            <span>Favoritos</span>
+        </button>
+        <button class="nav-tab-item" onclick="switchView('settings')">
+            <i class='bx bx-cog'></i>
+            <span>Proveedores</span>
+        </button>
+    </nav>
 
     <!-- Notification Toast -->
     <div id="toast" class="toast">
@@ -1306,8 +1432,7 @@
 
     <!-- Javascript logic -->
     <script>
-        // Precompiled static catalog placeholder for static build.
-        // It will be replaced during build with the JSON object.
+        // Precompiled static catalog placeholder for static build
         const staticCatalog = /* STATIC_CATALOG_PLACEHOLDER_JSON */ || [];
 
         // Global data structure
@@ -1317,11 +1442,11 @@
 
         // DOM elements
         const btnSync = document.getElementById('btn-sync');
-        const btnExport = document.getElementById('btn-export');
+        const btnExportJson = document.getElementById('btn-export-json');
+        const btnExportCsv = document.getElementById('btn-export-csv');
         const searchInput = document.getElementById('search-input');
         const comparisonGrid = document.getElementById('comparison-grid');
         const loaderView = document.getElementById('loader-view');
-        const emptyState = document.getElementById('empty-state');
         const categoriesBar = document.getElementById('categories-bar');
         const portalCategoriesSection = document.getElementById('portal-categories-section');
         const portalDealsSection = document.getElementById('portal-deals-section');
@@ -1340,10 +1465,11 @@
 
         // Setup Events
         btnSync.addEventListener('click', runExtraction);
-        btnExport.addEventListener('click', exportToERP);
+        btnExportJson.addEventListener('click', exportToJSON);
+        btnExportCsv.addEventListener('click', exportToCSV);
         searchInput.addEventListener('input', filterCards);
 
-        // Check if this is running as static or Flask backend
+        // Check environment host
         const isStaticBuild = window.location.hostname !== '127.0.0.1' && window.location.hostname !== 'localhost';
 
         // Initialize App on load
@@ -1351,39 +1477,59 @@
             updateFavoritesUI();
             
             if (staticCatalog && staticCatalog.length > 0) {
-                // If static catalog is pre-compiled, load it instantly!
                 groupedProducts = staticCatalog;
                 
-                // Show cards and categories immediately without loading overlay
+                // Render portal components & comparison catalog
                 renderCards(groupedProducts);
                 renderPortalDashboard(groupedProducts);
                 
-                // Update status cards of providers to green showing static status
-                updateCardStatus(cardSamsa, 'success', 'Sincronizado', '');
-                updateCardStatus(cardSpacio, 'success', 'Sincronizado', '');
-                updateCardStatus(cardVimora, 'success', 'Sincronizado', '');
-                updateCardStatus(cardMmpp, 'success', 'Sincronizado', '');
-                updateCardStatus(cardFabrica, 'success', 'Sincronizado', '');
+                // Set green synced status
+                updateCardStatus(cardSamsa, 'success', '997', '');
+                updateCardStatus(cardSpacio, 'success', '120', '');
+                updateCardStatus(cardVimora, 'success', '18', '');
+                updateCardStatus(cardMmpp, 'success', '418', '');
+                updateCardStatus(cardFabrica, 'success', '735', '');
                 
-                // Enable search and export
+                // Enable controls
                 searchInput.disabled = false;
-                btnExport.disabled = false;
-                
-                // If it is a Vercel static build, rename sync button to "Actualizar catálogo" or explain static
-                if (isStaticBuild) {
-                    btnSync.innerHTML = "<i class='bx bx-check-double'></i> Catálogo Estático (Vercel)";
-                    btnSync.disabled = true;
-                    btnSync.classList.add('btn-secondary');
-                    btnSync.classList.remove('btn-primary');
-                }
                 
                 const now = new Date();
-                infoTimestamp.textContent = `Modo: Estático (Vercel) | ${groupedProducts.length} productos cargados`;
+                infoTimestamp.textContent = `Modo: Estático (Vercel) | ${groupedProducts.length} productos`;
+                infoCount.textContent = `Mostrando: ${groupedProducts.length} productos agrupados`;
             } else {
-                // Normal dynamic mode: requires manual synchronization click
-                console.log("No precompiled catalog found. Run synchronization.");
+                console.log("Running in dev mode. Sincronizar localmente.");
+                btnSync.parentNode.style.display = 'block'; // Show sync button locally
             }
         });
+
+        // App Tab View Switcher (Mobile & Desktop)
+        function switchView(viewName) {
+            // Hide all views
+            document.querySelectorAll('.app-view').forEach(view => {
+                view.style.display = 'none';
+            });
+            
+            // Show target view
+            document.getElementById(`view-${viewName}`).style.display = 'block';
+            
+            // Toggle active classes in navigation items
+            document.querySelectorAll('.nav-tab-item').forEach(btn => {
+                const onclickAttr = btn.getAttribute('onclick');
+                if (onclickAttr && onclickAttr.includes(viewName)) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            // Trigger favorites specific rendering
+            if (viewName === 'favorites') {
+                renderFavorites();
+            }
+            
+            // Scroll to top of window to simulate view transition
+            window.scrollTo({ top: 0, behavior: 'instant' });
+        }
 
         // Category pills click events
         document.querySelectorAll('.category-pill').forEach(pill => {
@@ -1392,23 +1538,6 @@
                 pill.classList.add('active');
                 activeCategory = pill.getAttribute('data-category');
                 filterCards();
-            });
-        });
-
-        // Popular Categories Card click events
-        document.querySelectorAll('.category-portal-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const category = card.getAttribute('data-category');
-                activeCategory = category;
-                document.querySelectorAll('.category-pill').forEach(p => {
-                    if (p.getAttribute('data-category') === category) {
-                        p.classList.add('active');
-                    } else {
-                        p.classList.remove('active');
-                    }
-                });
-                filterCards();
-                categoriesBar.scrollIntoView({ behavior: 'smooth', block: 'start' });
             });
         });
 
@@ -1447,14 +1576,13 @@
             localStorage.setItem('todo_insumos_favorites', JSON.stringify(favorites));
             updateFavoritesUI();
             
-            if (activeCategory === 'favoritos') {
-                filterCards();
+            if (document.getElementById('view-favorites').style.display === 'block') {
+                renderFavorites();
             }
         }
         
         function updateFavoritesUI() {
-            document.getElementById('fav-count').textContent = favorites.length;
-            
+            // Sincronizar todos los botones favoritos
             document.querySelectorAll('.fav-btn').forEach(btn => {
                 const norm = btn.getAttribute('data-norm');
                 if (favorites.includes(norm)) {
@@ -1467,22 +1595,38 @@
             });
         }
 
+        // Render Favorites List (Dedicated Tab)
+        function renderFavorites() {
+            const favGrid = document.getElementById('favorites-grid');
+            favGrid.innerHTML = '';
+            
+            const favProducts = groupedProducts.filter(p => favorites.includes(p.normalized_name));
+            
+            if (favProducts.length === 0) {
+                favGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class='bx bx-star'></i>
+                        <h3>No tienes favoritos guardados</h3>
+                        <p>Explora el catálogo en la pestaña "Buscar" y pulsa la estrella en tus insumos favoritos.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            favProducts.forEach(p => {
+                const card = createProductCardElement(p);
+                favGrid.appendChild(card);
+            });
+            updateFavoritesUI();
+        }
+
         // Fetch prices from python backend API (Only runs on localhost)
         async function runExtraction() {
             if (isStaticBuild) return;
 
-            // UI setup for loading
             loaderView.classList.add('active');
             btnSync.disabled = true;
-            btnExport.disabled = true;
-            searchInput.disabled = true;
             
-            // Hide portal sections during load
-            portalCategoriesSection.style.display = 'none';
-            portalDealsSection.style.display = 'none';
-            categoriesBar.style.display = 'none';
-            
-            // Reset cards styling to waiting state
             updateCardStatus(cardSamsa, 'waiting', '-', '');
             updateCardStatus(cardSpacio, 'waiting', '-', '');
             updateCardStatus(cardVimora, 'waiting', '-', '');
@@ -1504,26 +1648,15 @@
                 if (data.success) {
                     groupedProducts = data.grouped_products || [];
                     
-                    // Update Provider Cards from summary
                     updateProvidersSummary(data.summary);
-                    
-                    // Render Cards Grid
                     renderCards(groupedProducts);
-                    
-                    // Calculate and render SoloTodo home portal elements
                     renderPortalDashboard(groupedProducts);
                     
-                    // Enable searching and export
                     searchInput.disabled = false;
-                    if (groupedProducts.length > 0) {
-                        btnExport.disabled = false;
-                    }
                     
-                    // Update timestamp
                     const now = new Date();
                     infoTimestamp.textContent = `Última actualización: ${now.toLocaleDateString()} a las ${now.toLocaleTimeString()}`;
-                    
-                    showToast(`Sincronización completa: ${data.total_extracted} variantes agrupadas.`);
+                    showToast(`Sincronización completa.`);
                 } else {
                     throw new Error(data.error || 'Error desconocido del servidor');
                 }
@@ -1536,10 +1669,6 @@
                 updateCardStatus(cardVimora, 'error', '0', 'Fallo de conexión');
                 updateCardStatus(cardMmpp, 'error', '0', 'Fallo de conexión');
                 updateCardStatus(cardFabrica, 'error', '0', 'Fallo de conexión');
-                
-                // Clear grid
-                comparisonGrid.innerHTML = '';
-                comparisonGrid.appendChild(emptyState);
             } finally {
                 loaderView.classList.remove('active');
                 btnSync.disabled = false;
@@ -1564,38 +1693,23 @@
         function updateProvidersSummary(summary) {
             if (!summary) return;
 
-            // Samsa Aromas
             const samsa = summary['Samsa Aromas'];
-            if (samsa) {
-                updateCardStatus(cardSamsa, samsa.status, samsa.count, ...[samsa.error || '']);
-            }
+            if (samsa) updateCardStatus(cardSamsa, samsa.status, samsa.count, ...[samsa.error || '']);
             
-            // Spacio Natural
             const spacio = summary['Spacio Natural'];
-            if (spacio) {
-                updateCardStatus(cardSpacio, spacio.status, spacio.count, ...[spacio.error || '']);
-            }
+            if (spacio) updateCardStatus(cardSpacio, spacio.status, spacio.count, ...[spacio.error || '']);
 
-            // Vimora Natural
             const vimora = summary['Vimora Natural'];
-            if (vimora) {
-                updateCardStatus(cardVimora, vimora.status, vimora.count, ...[vimora.error || '']);
-            }
+            if (vimora) updateCardStatus(cardVimora, vimora.status, vimora.count, ...[vimora.error || '']);
 
-            // MMPP
             const mmpp = summary['MMPP'];
-            if (mmpp) {
-                updateCardStatus(cardMmpp, mmpp.status, mmpp.count, ...[mmpp.error || '']);
-            }
+            if (mmpp) updateCardStatus(cardMmpp, mmpp.status, mmpp.count, ...[mmpp.error || '']);
 
-            // Fábrica de Velas
             const fabrica = summary['Fábrica de Velas'];
-            if (fabrica) {
-                updateCardStatus(cardFabrica, fabrica.status, fabrica.count, ...[fabrica.error || '']);
-            }
+            if (fabrica) updateCardStatus(cardFabrica, fabrica.status, fabrica.count, ...[fabrica.error || '']);
         }
 
-        // Render Grouped Product Cards Grid
+        // Render Grouped Product Cards Grid (Search View)
         function renderCards(products) {
             comparisonGrid.innerHTML = '';
 
@@ -1606,181 +1720,7 @@
             }
 
             products.forEach(p => {
-                const card = document.createElement('div');
-                card.className = 'product-compare-card';
-                card.setAttribute('data-name', p.display_name.toLowerCase());
-                card.setAttribute('data-norm', p.normalized_name.toLowerCase());
-                card.setAttribute('data-category', p.category);
-
-                // Card Header Main Layout (Left: Image, Right: Title & Category)
-                const headerMain = document.createElement('div');
-                headerMain.className = 'card-header-main';
-                
-                // Add Favorite Button in the corner
-                const favBtn = document.createElement('button');
-                favBtn.className = 'fav-btn';
-                favBtn.setAttribute('data-norm', p.normalized_name);
-                favBtn.style.position = 'absolute';
-                favBtn.style.top = '0';
-                favBtn.style.right = '0';
-                favBtn.style.zIndex = '5';
-                favBtn.innerHTML = favorites.includes(p.normalized_name) ? `<i class='bx bxs-star'></i>` : `<i class='bx bx-star'></i>`;
-                if (favorites.includes(p.normalized_name)) favBtn.classList.add('active');
-                favBtn.addEventListener('click', (e) => toggleFavorite(p.normalized_name, e));
-                headerMain.appendChild(favBtn);
-                
-                const imgCont = document.createElement('div');
-                imgCont.className = 'product-card-image-container';
-                const img = document.createElement('img');
-                img.className = 'product-card-image';
-                img.src = p.image_url || '';
-                img.alt = p.display_name;
-                
-                // Set fallback on load error or empty image
-                if (!p.image_url) {
-                    imgCont.innerHTML = `<div style="font-size: 1.5rem; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; background: linear-gradient(135deg, hsl(223, 47%, 10%) 0%, hsl(223, 47%, 20%) 100%);">${getProductIconHTML(p.normalized_name)}</div>`;
-                } else {
-                    img.onerror = () => {
-                        imgCont.innerHTML = `<div style="font-size: 1.5rem; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; background: linear-gradient(135deg, hsl(223, 47%, 10%) 0%, hsl(223, 47%, 20%) 100%);">${getProductIconHTML(p.normalized_name)}</div>`;
-                    };
-                    imgCont.appendChild(img);
-                }
-                headerMain.appendChild(imgCont);
-                
-                const headerInfo = document.createElement('div');
-                headerInfo.className = 'card-header-info';
-                
-                const catBadge = document.createElement('span');
-                catBadge.className = 'card-category-badge';
-                catBadge.textContent = p.category;
-                headerInfo.appendChild(catBadge);
-                
-                const titleSpan = document.createElement('h3');
-                titleSpan.className = 'product-name-title';
-                titleSpan.innerHTML = `<span>${p.display_name}</span>`;
-                headerInfo.appendChild(titleSpan);
-                
-                headerMain.appendChild(headerInfo);
-                card.appendChild(headerMain);
-
-                // Table Container
-                const tableCont = document.createElement('div');
-                tableCont.className = 'compare-table-container';
-
-                const table = document.createElement('table');
-                table.className = 'compare-table';
-
-                // Table Header
-                table.innerHTML = `
-                    <thead>
-                        <tr>
-                            <th>Formato</th>
-                            <th>Proveedor / Precio</th>
-                            <th style="text-align: right;">Mejor Opción</th>
-                        </tr>
-                    </thead>
-                `;
-
-                const tbody = document.createElement('tbody');
-
-                // Fill rows by size formats (iterates over list of objects)
-                p.formats.forEach(fObj => {
-                    const formatSize = fObj.size;
-                    const providersList = fObj.providers;
-                    const tr = document.createElement('tr');
-
-                    // If multiple providers sell this size, the first one is the cheapest (already sorted in backend)
-                    const isMultiple = providersList.length > 1;
-                    
-                    // Col 1: Format Size
-                    const tdSize = document.createElement('td');
-                    tdSize.innerHTML = `<span class="size-badge">${formatSize}</span>`;
-                    tr.appendChild(tdSize);
-
-                    // Col 2: Providers and Prices
-                    const tdProv = document.createElement('td');
-                    let provHTML = '';
-                    providersList.forEach((prov, index) => {
-                        const isCheapest = isMultiple && index === 0;
-                        const cheapestClass = isCheapest ? 'style="color: var(--success); font-weight: 700;"' : '';
-                        
-                        provHTML += `
-                            <div class="price-badge" style="margin-bottom: 0.25rem; &:last-child { margin-bottom: 0; }">
-                                <span class="price-value" ${cheapestClass}>
-                                    ${getProviderIconHTML(prov.provider)} ${prov.original_price}
-                                </span>
-                                <span class="price-provider" style="${isCheapest ? 'color: var(--success); opacity: 0.8;' : ''}">
-                                    ${prov.provider}
-                                </span>
-                            </div>
-                        `;
-                    });
-                    tdProv.innerHTML = provHTML;
-                    tr.appendChild(tdProv);
-
-                    // Col 3: Link/Action and Cheapest Highlight
-                    const tdAction = document.createElement('td');
-                    tdAction.style.textAlign = 'right';
-                    tdAction.style.verticalAlign = 'middle';
-
-                    const winner = providersList[0];
-                    if (isMultiple) {
-                        tr.className = 'cheapest-row';
-                        tdAction.innerHTML = `
-                            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.2rem;">
-                                <span class="cheapest-badge"><i class='bx bxs-star'></i> Ahorro</span>
-                                <a href="${winner.url}" target="_blank" class="shop-tag">
-                                    Ir <i class='bx bx-right-arrow-alt'></i>
-                                </a>
-                            </div>
-                        `;
-                    } else {
-                        tdAction.innerHTML = `
-                            <a href="${winner.url}" target="_blank" class="shop-tag">
-                                Ir <i class='bx bx-right-arrow-alt'></i>
-                            </a>
-                        `;
-                    }
-                    tr.appendChild(tdAction);
-
-                    tbody.appendChild(tr);
-                });
-
-                table.appendChild(tbody);
-                tableCont.appendChild(table);
-                card.appendChild(tableCont);
-
-                // Add Suggested Alternatives Section if there are matches in the same category
-                const alternatives = products
-                    .filter(other => other.category === p.category && other.normalized_name !== p.normalized_name)
-                    .slice(0, 4);
-                
-                if (alternatives.length > 0) {
-                    const altSection = document.createElement('div');
-                    altSection.className = 'alternatives-section';
-                    
-                    const altLabel = document.createElement('span');
-                    altLabel.className = 'alternatives-label';
-                    altLabel.innerHTML = `<i class='bx bx-git-pull-request'></i> Alternativas:`;
-                    altSection.appendChild(altLabel);
-                    
-                    const altList = document.createElement('div');
-                    altList.className = 'alternatives-list';
-                    
-                    alternatives.forEach(alt => {
-                        const altPill = document.createElement('button');
-                        altPill.className = 'alternative-pill';
-                        altPill.textContent = alt.display_name;
-                        altPill.addEventListener('click', () => {
-                            navigateToProduct(alt.normalized_name, alt.category);
-                        });
-                        altList.appendChild(altPill);
-                    });
-                    
-                    altSection.appendChild(altList);
-                    card.appendChild(altSection);
-                }
-
+                const card = createProductCardElement(p);
                 comparisonGrid.appendChild(card);
             });
 
@@ -1788,9 +1728,182 @@
             updateFavoritesUI();
         }
 
+        // Create HTML DOM comparison card element
+        function createProductCardElement(p) {
+            const card = document.createElement('div');
+            card.className = 'product-compare-card';
+            card.setAttribute('data-name', p.display_name.toLowerCase());
+            card.setAttribute('data-norm', p.normalized_name.toLowerCase());
+            card.setAttribute('data-category', p.category);
+
+            // Card Header Main Layout (Left: Image, Right: Title & Category)
+            const headerMain = document.createElement('div');
+            headerMain.className = 'card-header-main';
+            headerMain.style.position = 'relative';
+            
+            // Add Favorite Button in the corner
+            const favBtn = document.createElement('button');
+            favBtn.className = 'fav-btn';
+            favBtn.setAttribute('data-norm', p.normalized_name);
+            favBtn.style.position = 'absolute';
+            favBtn.style.top = '0';
+            favBtn.style.right = '0';
+            favBtn.style.zIndex = '5';
+            favBtn.innerHTML = favorites.includes(p.normalized_name) ? `<i class='bx bxs-star'></i>` : `<i class='bx bx-star'></i>`;
+            if (favorites.includes(p.normalized_name)) favBtn.classList.add('active');
+            favBtn.addEventListener('click', (e) => toggleFavorite(p.normalized_name, e));
+            headerMain.appendChild(favBtn);
+            
+            const imgCont = document.createElement('div');
+            imgCont.className = 'product-card-image-container';
+            const img = document.createElement('img');
+            img.className = 'product-card-image';
+            img.src = p.image_url || '';
+            img.alt = p.display_name;
+            
+            if (!p.image_url) {
+                imgCont.innerHTML = `<div style="font-size: 1.5rem; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; background: linear-gradient(135deg, hsl(223, 47%, 10%) 0%, hsl(223, 47%, 20%) 100%);">${getProductIconHTML(p.normalized_name)}</div>`;
+            } else {
+                img.onerror = () => {
+                    imgCont.innerHTML = `<div style="font-size: 1.5rem; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; background: linear-gradient(135deg, hsl(223, 47%, 10%) 0%, hsl(223, 47%, 20%) 100%);">${getProductIconHTML(p.normalized_name)}</div>`;
+                };
+                imgCont.appendChild(img);
+            }
+            headerMain.appendChild(imgCont);
+            
+            const headerInfo = document.createElement('div');
+            headerInfo.className = 'card-header-info';
+            
+            const catBadge = document.createElement('span');
+            catBadge.className = 'card-category-badge';
+            catBadge.textContent = p.category;
+            headerInfo.appendChild(catBadge);
+            
+            const titleSpan = document.createElement('h3');
+            titleSpan.className = 'product-name-title';
+            titleSpan.innerHTML = `<span>${p.display_name}</span>`;
+            headerInfo.appendChild(titleSpan);
+            
+            headerMain.appendChild(headerInfo);
+            card.appendChild(headerMain);
+
+            // Table Container
+            const tableCont = document.createElement('div');
+            tableCont.className = 'compare-table-container';
+
+            const table = document.createElement('table');
+            table.className = 'compare-table';
+
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Formato</th>
+                        <th>Proveedor / Precio</th>
+                        <th style="text-align: right;">Mejor Opción</th>
+                    </tr>
+                </thead>
+            `;
+
+            const tbody = document.createElement('tbody');
+
+            p.formats.forEach(fObj => {
+                const formatSize = fObj.size;
+                const providersList = fObj.providers;
+                const tr = document.createElement('tr');
+
+                const isMultiple = providersList.length > 1;
+                
+                const tdSize = document.createElement('td');
+                tdSize.innerHTML = `<span class="size-badge">${formatSize}</span>`;
+                tr.appendChild(tdSize);
+
+                const tdProv = document.createElement('td');
+                let provHTML = '';
+                providersList.forEach((prov, index) => {
+                    const isCheapest = isMultiple && index === 0;
+                    const cheapestClass = isCheapest ? 'style="color: var(--success); font-weight: 700;"' : '';
+                    
+                    provHTML += `
+                        <div class="price-badge" style="margin-bottom: 0.25rem; &:last-child { margin-bottom: 0; }">
+                            <span class="price-value" ${cheapestClass}>
+                                ${getProviderIconHTML(prov.provider)} ${prov.original_price}
+                            </span>
+                            <span class="price-provider" style="${isCheapest ? 'color: var(--success); opacity: 0.8;' : ''}">
+                                    ${prov.provider}
+                            </span>
+                        </div>
+                    `;
+                });
+                tdProv.innerHTML = provHTML;
+                tr.appendChild(tdProv);
+
+                const tdAction = document.createElement('td');
+                tdAction.style.textAlign = 'right';
+                tdAction.style.verticalAlign = 'middle';
+
+                const winner = providersList[0];
+                if (isMultiple) {
+                    tr.className = 'cheapest-row';
+                    tdAction.innerHTML = `
+                        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.2rem;">
+                            <span class="cheapest-badge"><i class='bx bxs-star'></i> Ahorro</span>
+                            <a href="${winner.url}" target="_blank" class="shop-tag">
+                                Ir <i class='bx bx-right-arrow-alt'></i>
+                            </a>
+                        </div>
+                    `;
+                } else {
+                    tdAction.innerHTML = `
+                        <a href="${winner.url}" target="_blank" class="shop-tag">
+                            Ir <i class='bx bx-right-arrow-alt'></i>
+                        </a>
+                    `;
+                }
+                tr.appendChild(tdAction);
+
+                tbody.appendChild(tr);
+            });
+
+            table.appendChild(tbody);
+            tableCont.appendChild(table);
+            card.appendChild(tableCont);
+
+            // Alternatives Section
+            const alternatives = groupedProducts
+                .filter(other => other.category === p.category && other.normalized_name !== p.normalized_name)
+                .slice(0, 4);
+            
+            if (alternatives.length > 0) {
+                const altSection = document.createElement('div');
+                altSection.className = 'alternatives-section';
+                
+                const altLabel = document.createElement('span');
+                altLabel.className = 'alternatives-label';
+                altLabel.innerHTML = `<i class='bx bx-git-pull-request'></i> Alternativas:`;
+                altSection.appendChild(altLabel);
+                
+                const altList = document.createElement('div');
+                altList.className = 'alternatives-list';
+                
+                alternatives.forEach(alt => {
+                    const altPill = document.createElement('button');
+                    altPill.className = 'alternative-pill';
+                    altPill.textContent = alt.display_name;
+                    altPill.addEventListener('click', () => {
+                        navigateToProduct(alt.normalized_name, alt.category);
+                    });
+                    altList.appendChild(altPill);
+                });
+                
+                altSection.appendChild(altList);
+                card.appendChild(altSection);
+            }
+
+            return card;
+        }
+
         // Render SoloTodo Portal Section (Categories and Deals of the Day)
         function renderPortalDashboard(products) {
-            // 1. Update Category Counts
             const cerasCount = products.filter(p => p.category === 'Ceras').length;
             const fraganciasCount = products.filter(p => p.category === 'Fragancias').length;
             const aceitesCount = products.filter(p => p.category === 'Aceites y Materias Primas').length;
@@ -1801,10 +1914,6 @@
             document.getElementById('count-aceites').textContent = `${aceitesCount} productos`;
             document.getElementById('count-moldes').textContent = `${moldesCount} productos`;
 
-            portalCategoriesSection.style.display = 'block';
-            categoriesBar.style.display = 'flex';
-
-            // 2. Calculate and Render Deals of the Day (Mayores Ahorros)
             renderDeals(products);
         }
 
@@ -1839,7 +1948,6 @@
                 });
             });
             
-            // Sort by savings percentage descending
             deals.sort((a, b) => b.savingsPct - a.savingsPct);
             return deals.slice(0, 4); // Top 4 deals
         }
@@ -1891,10 +1999,10 @@
 
         // Navigate, filter, scroll, and highlight selected product
         function navigateToProduct(normName, category) {
-            // 1. Clear search query
+            switchView('compare'); // Force Compare tab view open
+            
             searchInput.value = '';
             
-            // 2. Select category filter
             activeCategory = category;
             document.querySelectorAll('.category-pill').forEach(p => {
                 if (p.getAttribute('data-category') === category) {
@@ -1904,23 +2012,18 @@
                 }
             });
             
-            // 3. Filter cards
             filterCards();
             
-            // 4. Find target card
             const targetCard = Array.from(comparisonGrid.querySelectorAll('.product-compare-card'))
                 .find(card => card.getAttribute('data-norm') === normName.toLowerCase());
                 
             if (targetCard) {
-                // 5. Scroll smoothly
                 targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 
-                // 6. Trigger pulse glow animation
                 targetCard.classList.remove('pulse-glow-active');
                 void targetCard.offsetWidth; // Force Reflow
                 targetCard.classList.add('pulse-glow-active');
                 
-                // Cleanup animation class after 4s
                 setTimeout(() => {
                     targetCard.classList.remove('pulse-glow-active');
                 }, 4000);
@@ -1971,8 +2074,6 @@
                 let matchesCategory = false;
                 if (activeCategory === 'all') {
                     matchesCategory = true;
-                } else if (activeCategory === 'favoritos') {
-                    matchesCategory = favorites.includes(norm);
                 } else {
                     matchesCategory = cat === activeCategory;
                 }
@@ -1988,8 +2089,8 @@
             infoCount.textContent = `Filtrados: ${visibleCount} de ${groupedProducts.length} productos agrupados`;
         }
 
-        // Export grouped comparison price list to JSON for ERP
-        function exportToERP() {
+        // Export Database to JSON
+        function exportToJSON() {
             if (groupedProducts.length === 0) {
                 showToast('No hay datos para exportar', 'error');
                 return;
@@ -2006,6 +2107,7 @@
                         erpData.push({
                             producto: p.display_name,
                             producto_normalizado: p.normalized_name,
+                            categoria: p.category,
                             formato: formatSize,
                             formato_original: prov.original_size,
                             proveedor: prov.provider,
@@ -2018,20 +2120,62 @@
                 });
             });
 
-            // Trigger file download
             const dataStr = JSON.stringify(erpData, null, 2);
             const blob = new Blob([dataStr], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             
             const link = document.createElement('a');
             link.href = url;
-            link.download = `comparativa_erp_${new Date().toISOString().slice(0,10)}.json`;
+            link.download = `todo_insumos_precios_${new Date().toISOString().slice(0,10)}.json`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
             URL.revokeObjectURL(url);
             
-            showToast(`Exportación ERP exitosa: ${erpData.length} registros guardados.`);
+            showToast(`Exportación JSON exitosa: ${erpData.length} registros.`);
+        }
+
+        // Export Database to CSV (Spanish Semicolon Delimiter for direct Excel compatibility)
+        function exportToCSV() {
+            if (groupedProducts.length === 0) {
+                showToast('No hay datos para exportar', 'error');
+                return;
+            }
+
+            const timestamp = new Date().toISOString();
+            
+            // CSV Header
+            let csvContent = "Producto;Nombre Normalizado;Categoria;Formato;Proveedor;Precio Entero;Precio Original;Link Tienda;Fecha Sincronizacion\n";
+
+            groupedProducts.forEach(p => {
+                p.formats.forEach(fObj => {
+                    const formatSize = fObj.size;
+                    const providers = fObj.providers;
+                    providers.forEach(prov => {
+                        // Sanitize semicolon and quotes
+                        const cleanProd = p.display_name.replace(/"/g, '""').replace(/;/g, ',');
+                        const cleanNorm = p.normalized_name.replace(/"/g, '""').replace(/;/g, ',');
+                        const cleanFormat = formatSize.replace(/"/g, '""').replace(/;/g, ',');
+                        const cleanPriceOrig = prov.original_price.replace(/"/g, '""').replace(/;/g, ',');
+                        
+                        csvContent += `"${cleanProd}";"${cleanNorm}";"${p.category}";"${cleanFormat}";"${prov.provider}";${prov.price};"${cleanPriceOrig}";"${prov.url}";"${timestamp}"\n`;
+                    });
+                });
+            });
+
+            // Add UTF-8 BOM so Excel opens it with correct accent symbols
+            const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `todo_insumos_precios_${new Date().toISOString().slice(0,10)}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            showToast('Exportación CSV (Excel) exitosa.');
         }
     </script>
 </body>
