@@ -433,7 +433,15 @@
 
         @media (min-width: 768px) {
             .categories-portal-grid {
-                grid-template-columns: repeat(4, 1fr);
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1.25rem;
+                margin-bottom: 2.5rem;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .categories-portal-grid {
+                grid-template-columns: repeat(6, 1fr);
                 gap: 1.25rem;
                 margin-bottom: 2.5rem;
             }
@@ -1198,7 +1206,7 @@
             <section id="portal-categories-section" class="portal-section">
                 <h2 class="section-title"><i class='bx bxs-grid-alt'></i> Categorías Populares</h2>
                 <div class="categories-portal-grid">
-                    <!-- Ceras -->
+                     <!-- Ceras -->
                     <div class="category-portal-card" data-category="Ceras">
                         <div class="category-portal-icon" style="background-color: rgba(251, 191, 36, 0.1); color: #fbbf24;">
                             <i class='bx bxs-color-fill'></i>
@@ -1218,13 +1226,33 @@
                         <span class="category-portal-count" id="count-fragancias">0 productos</span>
                     </div>
 
+                    <!-- Mechas y Pabilos -->
+                    <div class="category-portal-card" data-category="Mechas y Pabilos">
+                        <div class="category-portal-icon" style="background-color: rgba(16, 185, 129, 0.1); color: #10b981;">
+                            <i class='bx bxs-flame'></i>
+                        </div>
+                        <span class="category-portal-title">Mechas</span>
+                        <span class="category-portal-desc">Pabilos encerados, mechas de madera, de algodón, ojetillos y soportes.</span>
+                        <span class="category-portal-count" id="count-mechas">0 productos</span>
+                    </div>
+
+                    <!-- Frascos y Envases -->
+                    <div class="category-portal-card" data-category="Frascos y Envases">
+                        <div class="category-portal-icon" style="background-color: rgba(6, 182, 212, 0.1); color: #06b6d4;">
+                            <i class='bx bxs-cylinder'></i>
+                        </div>
+                        <span class="category-portal-title">Frascos</span>
+                        <span class="category-portal-desc">Vasos de vidrio, potes de aluminio, bomboneras y tapas para tus velas.</span>
+                        <span class="category-portal-count" id="count-frascos">0 productos</span>
+                    </div>
+
                     <!-- Aceites y Materias Primas -->
                     <div class="category-portal-card" data-category="Aceites y Materias Primas">
                         <div class="category-portal-icon" style="background-color: rgba(167, 139, 250, 0.1); color: #a78bfa;">
                             <i class='bx bxs-flask'></i>
                         </div>
                         <span class="category-portal-title">Materias Primas</span>
-                        <span class="category-portal-desc">Aceites portadores, mantecas naturales, pabilos, micas y aditivos.</span>
+                        <span class="category-portal-desc">Aceites portadores, mantecas naturales, micas y aditivos de velas y jabones.</span>
                         <span class="category-portal-count" id="count-aceites">0 productos</span>
                     </div>
 
@@ -1257,6 +1285,8 @@
                 <button class="category-pill active" data-category="all">Todos</button>
                 <button class="category-pill" data-category="Fragancias">Fragancias</button>
                 <button class="category-pill" data-category="Ceras">Ceras</button>
+                <button class="category-pill" data-category="Mechas y Pabilos">Mechas</button>
+                <button class="category-pill" data-category="Frascos y Envases">Frascos</button>
                 <button class="category-pill" data-category="Aceites y Materias Primas">Insumos y Aditivos</button>
                 <button class="category-pill" data-category="Moldes">Moldes</button>
             </section>
@@ -1906,11 +1936,15 @@
         function renderPortalDashboard(products) {
             const cerasCount = products.filter(p => p.category === 'Ceras').length;
             const fraganciasCount = products.filter(p => p.category === 'Fragancias').length;
+            const mechasCount = products.filter(p => p.category === 'Mechas y Pabilos').length;
+            const frascosCount = products.filter(p => p.category === 'Frascos y Envases').length;
             const aceitesCount = products.filter(p => p.category === 'Aceites y Materias Primas').length;
             const moldesCount = products.filter(p => p.category === 'Moldes').length;
 
             document.getElementById('count-ceras').textContent = `${cerasCount} productos`;
             document.getElementById('count-fragancias').textContent = `${fraganciasCount} productos`;
+            document.getElementById('count-mechas').textContent = `${mechasCount} productos`;
+            document.getElementById('count-frascos').textContent = `${frascosCount} productos`;
             document.getElementById('count-aceites').textContent = `${aceitesCount} productos`;
             document.getElementById('count-moldes').textContent = `${moldesCount} productos`;
 
@@ -2053,6 +2087,12 @@
             }
             if (name.includes('molde') || name.includes('silicona')) {
                 return "<i class='bx bxs-shapes' style='color: #f43f5e;'></i>";
+            }
+            if (name.includes('pabilo') || name.includes('mecha') || name.includes('encerado') || name.includes('ojetillo')) {
+                return "<i class='bx bxs-flame' style='color: #10b981;'></i>";
+            }
+            if (name.includes('frasco') || name.includes('vaso') || name.includes('pote') || name.includes('lata') || name.includes('bombonera') || name.includes('tapa')) {
+                return "<i class='bx bxs-cylinder' style='color: #06b6d4;'></i>";
             }
             return "<i class='bx bxs-droplet' style='color: var(--primary);'></i>";
         }

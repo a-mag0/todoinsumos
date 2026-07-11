@@ -102,7 +102,7 @@ def classify_and_clean_product(norm_name, provider):
     
     # Exclude irrelevant products (food ingredients and general accessories)
     exclude_words = [
-        'etiqueta', 'instrucciones', 'modo de uso', 'caja', 'bolsa', 'envase', 'servicio', 'curso', 'despacho', 
+        'etiqueta', 'instrucciones', 'modo de uso', 'caja', 'bolsa', 'servicio', 'curso', 'despacho', 
         'pack 3 aromas', 'pack de aromas', 'carne de soya', 'carne de soja', 'poroto', 'lenteja', 'garbanzo', 
         'chia', 'avena', 'quinoa', 'sal de mar', 'sal de maras', 'sal de cahuil', 'arroz', 'harina', 'nuez', 
         'almendras tostadas', 'coco rallado', 'mani', 'semilla', 'oregano', 'pimienta', 'comino', 'aliño',
@@ -114,6 +114,14 @@ def classify_and_clean_product(norm_name, provider):
     if provider == "Samsa Aromas":
         return "Fragancias"
         
+    # Mechas y Pabilos category
+    if any(w in name_lower for w in ['pabilo', 'mecha', 'mechas', 'pabilos', 'encerado', 'hebras', 'hebra', 'ojetillo', 'soporte metalico', 'soporte para pabilo', 'algodon con pie', 'mecha de algodon', 'pabilo de madera', 'soporte madera', 'portamecha']):
+        return 'Mechas y Pabilos'
+
+    # Frascos y Envases category
+    if any(w in name_lower for w in ['frasco', 'frascos', 'vaso', 'vasos', 'pote', 'potes', 'tarro', 'tarros', 'lata', 'latas', 'bombonera', 'bomboneras', 'copa', 'copas', 'aluminio con tapa', 'envase vidrio', 'envase de vidrio', 'envase de lata', 'envase de aluminio', 'tapa metalica', 'tapa de madera', 'tapa difusor', 'gotero']):
+        return 'Frascos y Envases'
+        
     # Ceras category
     if any(w in name_lower for w in ['cera', 'soja', 'soya', 'abeja', 'parafina', 'arena perlada', 'vaselina']):
         return 'Ceras'
@@ -123,7 +131,7 @@ def classify_and_clean_product(norm_name, provider):
         return 'Moldes'
         
     # Aceites y Materias Primas category
-    if any(w in name_lower for w in ['aceite', 'manteca', 'jojoba', 'almendra', 'pepita', 'rosa mosqueta', 'coco', 'glicerina', 'aditivo', 'colorante', 'acido citrico', 'bicarbonato', 'agua de rosas', 'btms', 'sci', 'carbon', 'pabilo', 'mecha', 'ojetillo', 'estearina', 'mica', 'soporte']):
+    if any(w in name_lower for w in ['aceite', 'manteca', 'jojoba', 'almendra', 'pepita', 'rosa mosqueta', 'coco', 'glicerina', 'aditivo', 'colorante', 'acido citrico', 'bicarbonato', 'agua de rosas', 'btms', 'sci', 'carbon', 'estearina', 'mica']):
         return 'Aceites y Materias Primas'
         
     # Fallback category
