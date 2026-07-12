@@ -65,7 +65,7 @@ def normalize_size(size_str):
         
     return size_str
 
-def normalize_product_name(name):
+def normalize_product_name(name, provider=None):
     if not name:
         return ""
     name_norm = name.lower()
@@ -73,24 +73,27 @@ def normalize_product_name(name):
     # Remove accents
     name_norm = name_norm.replace('á', 'a').replace('é', 'e').replace('í', 'i').replace('ó', 'o').replace('ú', 'u')
     
+    # Check if this is a fragrance/essential oil from Samsa or other stores to avoid hijacking it as soy wax
+    is_fragrance = (provider == "Samsa Aromas") or any(k in name_norm for k in ['esencia', 'fragancia', 'aroma', 'difusor', 'perfume', 'aceite esencial'])
+    
     # Standardize soy wax fusion points
     fusion = ""
-    if any(k in name_norm for k in ['bajo punto de fusion', 'bpf', 'b.p.f.', 'punto de fusion bajo']):
+    if any(k in name_norm for k in ['bajo punto de fusion', 'bpf', 'b.p.f.', 'punto de fusion bajo', 'punto de  fusion 44-46', 'punto de fusion 44-46']):
         fusion = " BPF"
-    elif any(k in name_norm for k in ['alto punto de fusion', 'apf', 'a.p.f.', 'punto de fusion alto', 'punto de fusion 62', 'punto de  fusion 62']):
-        # Standardize Punto de Fusion 62 as APF
+    elif any(k in name_norm for k in ['alto punto de fusion', 'apf', 'a.p.f.', 'punto de fusion alto', 'punto de fusion 62', 'punto de  fusion 62', 'punto de fusion 56-58']):
+        # Standardize Punto de Fusion 62 and 56-58 as APF
         fusion = " APF"
         
-    # Standardize Soy Wax (BPF/APF)
-    if 'soja' in name_norm or 'soya' in name_norm:
+    # Standardize Soy Wax (BPF/APF) - ONLY if it's not a fragrance
+    if not is_fragrance and ('soja' in name_norm or 'soya' in name_norm):
         return f"Cera de Soja{fusion}"
         
-    # Standardize Beeswax
-    if 'abeja' in name_norm or 'abejas' in name_norm:
+    # Standardize Beeswax - ONLY if it's not a fragrance
+    if not is_fragrance and ('abeja' in name_norm or 'abejas' in name_norm):
         return "Cera de Abeja"
         
-    # Standardize Arena Perlada
-    if 'arena perl' in name_norm or 'cera arena' in name_norm:
+    # Standardize Arena Perlada - ONLY if it's not a fragrance
+    if not is_fragrance and ('arena perl' in name_norm or 'cera arena' in name_norm):
         return "Cera Arena Perlada"
         
     # Remove sizes and format identifiers from name
@@ -123,8 +126,9 @@ def classify_and_clean_product(norm_name, provider):
     if any(ew in name_lower for ew in exclude_words):
         return None
         
-    if provider == "Samsa Aromas":
-        return "Fragancias"
+    # If the product is explicitly a fragrance, scent, or additive for candles/wax, classify as Fragancias immediately
+    if any(k in name_lower for k in ['esencia', 'fragancia', 'aroma', 'para cera', 'para soya', 'para soja', 'para velas', 'perfume', 'vela de soja', 'vela de soya', 'velas de soja', 'velas de soya']):
+        return 'Fragancias'
         
     # Mechas y Pabilos category
     if any(w in name_lower for w in ['pabilo', 'mecha', 'mechas', 'pabilos', 'encerado', 'hebras', 'hebra', 'ojetillo', 'soporte metalico', 'soporte para pabilo', 'algodon con pie', 'mecha de algodon', 'pabilo de madera', 'soporte madera', 'portamecha']):
@@ -520,7 +524,7 @@ def agrupar_productos(all_extracted_items):
     grouped = {}
     for item in all_extracted_items:
         original_name = item["product_name"]
-        norm_name = normalize_product_name(original_name)
+        norm_name = normalize_product_name(original_name, item["provider"])
         norm_size = normalize_size(item["title"])
         
         if not norm_name or not norm_size:
